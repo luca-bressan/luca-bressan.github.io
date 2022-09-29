@@ -1,5 +1,6 @@
 source "https://rubygems.org"
 
+gem "webrick"
 gem "jekyll", "~> 3.9.2"
 gem "github-pages", "~> 227"
 gem "rake", "~> 13.0.3"
