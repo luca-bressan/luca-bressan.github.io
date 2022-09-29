@@ -1,14 +1,15 @@
 ---
 layout: post
-cover: 'assets/images/cover7.jpg'
+current: post
+cover: assets/images/water.jpg
 navigation: True
-title: The Businessman & the fisherman
+title: The Businessman & The Fisherman
 date: 2014-08-12 10:18:00
-tags: fables fiction
-subclass: 'post tag-test tag-content'
-logo: 'assets/images/ghost.png'
-author: casper
-categories: casper
+tags: fables
+class: post-template
+subclass: 'post'
+logo: assets/images/ghost.png
+author: hannah
 ---
 
 An American businessman took a vacation to a small coastal Mexican village on doctor’s orders. Unable to sleep after an urgent phone call from the office the first morning, he walked out to the pier to clear his head. A small boat with just one fisherman had docked, and inside the boat were several large yellowfin tuna. The American complimented the Mexican on the quality of his fish.
@@ -40,6 +41,7 @@ The American laughed and said, “That’s the best part. When the time is right
 “Millions señor? Then what?"
 
 “Then you would retire and move to a small coastal fishing village, where you would sleep late, fish a little, play with your kids, take a siesta with your wife, and stroll in to the village in the evenings where you could sip wine and play your guitar with your amigos.”
+
 
 Adapted from the "Anekdote zur Senkung der Arbeitsmoral" by **Heinrich Böll**
 
