@@ -64,9 +64,9 @@
                     <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2</a></section>
                 <nav class="site-footer-nav">
                     <a href="{{ site.baseurl }}">Latest Posts</a>
-                    {% if site.facebook %}<a href="https://facebook.com/{{ site.facebook }}" target="_blank" rel="noopener">Facebook</a>{% endif %}
-                    {% if site.twitter %}<a href="https://twitter.com/{{ site.twitter }}" target="_blank" rel="noopener">Twitter</a>{% endif %}
-                    <a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>
+                    {% if site.linkedin %}<a href="https://linkedin.com/{{ site.facebook }}" target="_blank" rel="noopener">Linkedin</a>{% endif %}
+                    {% if site.github %}<a href="https://github.com/{{ site.github }}" target="_blank" rel="noopener">GitHub</a>{% endif %}
+                    <!--<a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>-->
                 </nav>
             </div>
         </footer>
@@ -123,7 +123,7 @@
 
 
     <!-- Add Google Analytics  -->
-    {% include analytics.html %}
+    <!--{% include analytics.html %}-->
 
     <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
     {% if page.class == "post-template" %}
