@@ -11,7 +11,7 @@
 
 
 
-    <title>Luca Bressan - finance & statistics</title>
+    <title>About</title>
     <meta name="HandheldFriendly" content="True" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <!-- Styles'n'Scripts -->
@@ -36,28 +36,33 @@
     <!-- This tag outputs SEO meta+structured data and other important settings -->
     <meta name="description" content="My finance & statistics blog" />
     <link rel="shortcut icon" href="http://localhost:4000/assets/images/favicon.png" type="image/png" />
-    <link rel="canonical" href="http://localhost:4000/" />
+    <link rel="canonical" href="http://localhost:4000/about/" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
     <meta property="og:site_name" content="Luca Bressan - finance & statistics" />
     <meta property="og:type" content="website" />
-    <meta property="og:title" content="Luca Bressan - finance & statistics" />
-    <meta property="og:description" content="My finance & statistics blog" />
-    <meta property="og:url" content="http://localhost:4000/" />
+    <meta property="og:title" content="About" />
+    <meta property="og:description" content="About me...
+" />
+    <meta property="og:url" content="http://localhost:4000/about/" />
     <meta property="og:image" content="http://localhost:4000/assets/images/blog-cover.jpg" />
     <meta property="article:publisher" content="https://www.facebook.com/" />
+    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="article:published_time" content="" />
+    <meta property="article:modified_time" content="" />
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Luca Bressan - finance & statistics" />
-    <meta name="twitter:description" content="My finance & statistics blog" />
+    <meta name="twitter:title" content="About" />
+    <meta name="twitter:description" content="About me...
+" />
     <meta name="twitter:url" content="http://localhost:4000/" />
     <meta name="twitter:image" content="http://localhost:4000/assets/images/blog-cover.jpg" />
     <meta name="twitter:label1" content="Written by" />
     <meta name="twitter:data1" content="Luca Bressan - finance & statistics" />
     <meta name="twitter:site" content="@" />
     <meta name="twitter:creator" content="@" />
-    <meta property="og:image:width" content="2000" />
-    <meta property="og:image:height" content="666" />
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
 
     <!-- for mathjax support -->
     
@@ -71,7 +76,7 @@
         "name": "Luca Bressan - finance & statistics",
         "logo": "http://localhost:4000/assets/images/blog-icon.png"
     },
-    "url": "http://localhost:4000/",
+    "url": "http://localhost:4000/about/",
     "image": {
         "@type": "ImageObject",
         "url": "http://localhost:4000/assets/images/blog-cover.jpg",
@@ -80,9 +85,10 @@
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "http://localhost:4000/"
+        "@id": "http://localhost:4000/about/"
     },
-    "description": "My finance & statistics blog"
+    "description": "About me...
+"
 }
     </script>
 
@@ -95,11 +101,11 @@
     </script> -->
 
     <meta name="generator" content="Jekyll 3.6.2" />
-    <link rel="alternate" type="application/rss+xml" title="Luca Bressan - finance & statistics" href="/feed.xml" />
+    <link rel="alternate" type="application/rss+xml" title="About" href="/feed.xml" />
 
 
 </head>
-<body class="home-template">
+<body class="page-template">
 
     <div class="site-wrapper">
         <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
@@ -108,18 +114,14 @@
 into the {body} of the default.hbs template -->
 
 <!-- The big featured header, it uses blog cover image as a BG if available -->
-<header class="site-header outer " style="background-image:  url(/assets/images/blog-cover.jpg) ">
+<header class="site-header outer">
     <div class="inner">
-        <div class="site-header-content">
-            <h1 class="site-title">
-                
-                    <img class="site-logo" src="/assets/images/blog-icon.png" alt="Luca Bressan - finance & statistics"/>
-                
-            </h1>
-            <h2 class="site-description">My finance & statistics blog</h2>
-        </div>
         <nav class="site-nav">
     <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="http://localhost:4000/"><img src="/assets/images/blog-icon.png" alt="Luca Bressan - finance & statistics" /></a>
+            
         
         
             <ul class="nav" role="menu">
@@ -143,81 +145,40 @@ into the {body} of the default.hbs template -->
     </div>
 </header>
 
-<!-- The main content area -->
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
 <main id="site-main" class="site-main outer" role="main">
     <div class="inner">
 
-        <div class="post-feed">
-            <!-- The tag below includes the markup for each post - partials/post-card.hbs -->
+        <article class="post-full  post page no-image">
+
+            <header class="post-full-header">
+                <h1 class="post-full-title">About</h1>
+            </header>
+
             
 
+            <section class="post-full-content">
+                <p>About me…</p>
 
-    <article class="post-card home-template">
-        
-            <a class="post-card-image-link" href="/testpage">
-                <div class="post-card-image" style="background-image: url(/assets/images/summit.jpg)"></div>
-            </a>
-        
-        <div class="post-card-content">
-            <a class="post-card-content-link" href="/testpage">
-                <header class="post-card-header">
-                    
-                        
-                            
-                                <span class="post-card-tags">Testing</span>
-                            
-                        
-                    
+            </section>
 
-                    <h2 class="post-card-title">Test page</h2>
-                </header>
-                <section class="post-card-excerpt">
-                    
-                        <p>Ajejajejak \(y=mx+q\)
-</p>
-                    
-                </section>
-            </a>
-            <footer class="post-card-meta">
-                
-                    
-                
-                    
-                        
-                        <img class="author-profile-image" src="/assets/images/luca.jpg" alt="Luca Bressan" />
-                        
-                        <span class="post-card-author">
-                            <a href="/author/luca/">Luca Bressan</a>
-                        </span>
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                    
-                
-                <span class="reading-time">
-                    
-                    
-                      1 min read
-                    
-                </span>
-            </footer>
-        </div>
-    </article>
-
-
-        </div>
+        </article>
 
     </div>
 </main>
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+<script>
+$(function() {
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+});
+</script>
+
 
 
         <!-- Previous/next page links - displayed on every page -->
@@ -265,7 +226,7 @@ into the {body} of the default.hbs template -->
     <!-- Paginator increased to "infinit" in _config.yml -->
     <!-- if paginator.posts  -->
     <!-- <script>
-        var maxPages = parseInt('1');
+        var maxPages = parseInt('');
     </script>
     <script src="/assets/js/infinitescroll.js"></script> -->
     <!-- /endif -->
@@ -288,6 +249,14 @@ into the {body} of the default.hbs template -->
 -->
 
     <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+$(function() {
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+});
+</script>
+
     
 
     <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->

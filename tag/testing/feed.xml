@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom" >
+  <generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator>
+  <link href="http://localhost:4000/tag/testing/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2022-09-30T14:19:44+02:00</updated>
+  <id>http://localhost:4000/tag/testing/feed.xml</id>
+
+  
+  
+  
+
+  
+    <title type="html">Luca Bressan - finance &amp;amp; statistics | </title>
+  
+
+  
+    <subtitle>My finance &amp; statistics blog</subtitle>
+  
+
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+
+  
+    <entry>
+      <title type="html">Test page</title>
+      <link href="http://localhost:4000/testpage" rel="alternate" type="text/html" title="Test page" />
+      <published>2022-09-30T12:18:00+02:00</published>
+      <updated>2022-09-30T12:18:00+02:00</updated>
+      <id>http://localhost:4000/testpage</id>
+      <content type="html" xml:base="http://localhost:4000/testpage">&lt;p&gt;Ajejajejak \(y=mx+q\)&lt;/p&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>Luca Bressan</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="testing" />
+      
+
+      
+        <summary type="html">Ajejajejak \(y=mx+q\)</summary>
+      
+
+      
+      
+    </entry>
+  
+</feed>
