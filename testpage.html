@@ -19,8 +19,9 @@
     <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
     <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
     <!-- highlight.js -->
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/default.min.css">
-    <style>.hljs { background: none; }</style>
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/styles/default.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.11.0/highlight.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
 
     <!--[if IE]>
         <style>
@@ -72,7 +73,8 @@
         TeX: { equationNumbers: { autoNumber: "AMS" } }
         });
       </script>
-      <script type="text/javascript" async src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
     
 
     <script type="application/ld+json">
@@ -127,7 +129,7 @@ into the {body} of the default.hbs template -->
     <div class="site-nav-left">
         
             
-                <a class="site-nav-logo" href="http://localhost:4000/"><img src="/assets/images/blog-icon.png" alt="Luca Bressan - finance & statistics" /></a>
+                <a class="site-nav-logo" href="https://luca-bressan.github.io/"><img src="/assets/images/blog-icon.png" alt="Luca Bressan - finance & statistics" /></a>
             
         
         
@@ -336,13 +338,6 @@ into the {body} of the default.hbs template -->
     <!-- The big email subscribe modal content -->
     
 
-    <!-- highlight.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.10.0/components/prism-abap.min.js"></script>
-    <script>$(document).ready(function() {
-      $('pre code').each(function(i, block) {
-        hljs.highlightBlock(block);
-      });
-    });</script>
 
     <!-- jQuery + Fitvids, which makes all video embeds responsive -->
     <script
@@ -351,7 +346,7 @@ into the {body} of the default.hbs template -->
         crossorigin="anonymous">
     </script>
     <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
-    <script type="text/javascript" src="https://demo.ghost.io/assets/js/jquery.fitvids.js?v=724281a32e"></script>
+
 
 
     <!-- Paginator increased to "infinit" in _config.yml -->
