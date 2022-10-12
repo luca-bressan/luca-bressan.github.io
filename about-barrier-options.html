@@ -37,8 +37,8 @@
     
     <!-- This tag outputs SEO meta+structured data and other important settings -->
     <meta name="description" content="My finance & statistics blog" />
-    <link rel="shortcut icon" href="http://localhost:4000/assets/images/favicon.png" type="image/png" />
-    <link rel="canonical" href="http://localhost:4000/about-barrier-options" />
+    <link rel="shortcut icon" href="https://luca-bressan.github.io/assets/images/favicon.png" type="image/png" />
+    <link rel="canonical" href="https://luca-bressan.github.io/about-barrier-options" />
     <meta name="referrer" content="no-referrer-when-downgrade" />
 
      <!--title below is coming from _includes/dynamic_title-->
@@ -46,24 +46,14 @@
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Some facts about barrier options" />
     <meta property="og:description" content="Cover photo by T L. Arguably, a dam is a down-and-out type of barrier, although not the kind we’re interested in. What you should know before reading this post: Fundamentals of option pricing in the Black-Scholes model. Fundamentals of stochastic calculus. About barrier options and other related contracts Let’s be" />
-    <meta property="og:url" content="http://localhost:4000/about-barrier-options" />
-    <meta property="og:image" content="http://localhost:4000/assets/images/about-barrier-options/barrier.jpg" />
-    <meta property="article:publisher" content="https://www.facebook.com/" />
-    <meta property="article:author" content="https://www.facebook.com/" />
+    <meta property="og:url" content="https://luca-bressan.github.io/about-barrier-options" />
+    <meta property="og:image" content="https://luca-bressan.github.io/assets/images/about-barrier-options/barrier.jpg" />
+    <meta property="article:publisher" content="https://www.linkedin.com/in/lbressan" />
+    <meta property="article:author" content="https://www.linkedin.com/inlbressan" />
     <meta property="article:published_time" content="2022-10-10T12:18:00+02:00" />
     <meta property="article:modified_time" content="2022-10-10T12:18:00+02:00" />
     <meta property="article:tag" content="Derivatives" />
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Some facts about barrier options" />
-    <meta name="twitter:description" content="Cover photo by T L. Arguably, a dam is a down-and-out type of barrier, although not the kind we’re interested in. What you should know before reading this post: Fundamentals of option pricing in the Black-Scholes model. Fundamentals of stochastic calculus. About barrier options and other related contracts Let’s be" />
-    <meta name="twitter:url" content="http://localhost:4000/" />
-    <meta name="twitter:image" content="http://localhost:4000/assets/images/about-barrier-options/barrier.jpg" />
-    <meta name="twitter:label1" content="Written by" />
-    <meta name="twitter:data1" content="Luca Bressan - finance & statistics" />
-    <meta name="twitter:label2" content="Filed under" />
-    <meta name="twitter:data2" content="Derivatives" />
-    <meta name="twitter:site" content="@" />
-    <meta name="twitter:creator" content="@" />
+    
     <meta property="og:image:width" content="1400" />
     <meta property="og:image:height" content="933" />
 
@@ -71,11 +61,13 @@
     
       <script type="text/x-mathjax-config">
         MathJax.Hub.Config({
-        TeX: { equationNumbers: { autoNumber: "AMS" } }
+          CommonHTML: { linebreaks: { automatic: true } },
+          "HTML-CSS": { linebreaks: { automatic: true } },
+                 SVG: { linebreaks: { automatic: true } }
         });
-      </script>
+        </script>
       <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
-      <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.0.1/es5/tex-mml-chtml.js"></script>
+      <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
     
 
     <script type="application/ld+json">
@@ -85,18 +77,18 @@
     "publisher": {
         "@type": "Organization",
         "name": "Luca Bressan - finance & statistics",
-        "logo": "http://localhost:4000/assets/images/blog-icon.png"
+        "logo": "https://luca-bressan.github.io/assets/images/blog-icon.png"
     },
-    "url": "http://localhost:4000/about-barrier-options",
+    "url": "https://luca-bressan.github.io/about-barrier-options",
     "image": {
         "@type": "ImageObject",
-        "url": "http://localhost:4000/assets/images/about-barrier-options/barrier.jpg",
+        "url": "https://luca-bressan.github.io/assets/images/about-barrier-options/barrier.jpg",
         "width": 2000,
         "height": 666
     },
     "mainEntityOfPage": {
         "@type": "WebPage",
-        "@id": "http://localhost:4000/about-barrier-options"
+        "@id": "https://luca-bressan.github.io/about-barrier-options"
     },
     "description": "Cover photo by T L. Arguably, a dam is a down-and-out type of barrier, although not the kind we’re interested in. What you should know before reading this post: Fundamentals of option pricing in the Black-Scholes model. Fundamentals of stochastic calculus. About barrier options and other related contracts Let’s be"
 }
@@ -231,7 +223,7 @@ be the dynamic of a geometric brownian motion under a suitable probability measu
   <p>A <em>contract function</em> \(\Phi_{A_{T}}\) on some asset \(A_{t}\) is a generic function of at least asset price and time of expiration. For our intents and purposes, it will represent exactly the value of a given contract at expiration.</p>
 </blockquote>
 
-<p>Our contract functions unfortunately won’t be just function of asset price and time of expiration. They will be functions of the asseth path as well, that is they will be functions of \(A_{t}\) for some \(t&lt;T\). This is what we mean when we talk about path-dependency.</p>
+<p>Our contract functions unfortunately won’t be just function of asset price and time of expiration. They will be functions of the asset path as well, that is they will be functions of \(A_{t}\) for some \(t&lt;T\). This is what we mean when we talk about path-dependency.</p>
 
 <blockquote>
   <h6 id="definition-pricing-function-price-function">Definition. <em>(Pricing function, price function)</em></h6>
@@ -300,9 +292,9 @@ Then, use the abstract Bayes theorem to state that there exists a new probabilit
 
 <p>We can now state what the price for this barrier option is:</p>
 
-<p>\begin{aligned}
-C^{DOC,regular} (S_{t}, t, \sigma, r, H, K) &amp;= C^{vanilla} \left( S_{t}, t, \sigma, r, K \right) \mathbb{1}_{ \left\lbrace S_{t}&gt;H \right\rbrace } (S_{t}) \\ &amp;- \left( \frac{S_{t}}{H} \right)^{\alpha} C^{vanilla} \left( \frac{H^2}{S_{t}}, t, \sigma, r, K \right) \mathbb{1}_{ \left\lbrace S_{t}&gt;H \right\rbrace } (S_{t})
-\end{aligned}</p>
+<p>\begin{equation}
+C^{DOC,regular} (S_{t}, t, \sigma, r, H, K) = C^{vanilla} \left( S_{t}, t, \sigma, r, K \right) \mathbb{1}_{ \left\lbrace S_{t}&gt;H \right\rbrace } (S_{t}) - \left( \frac{S_{t}}{H} \right)^{\alpha} C^{vanilla} \left( \frac{H^2}{S_{t}}, t, \sigma, r, K \right) \mathbb{1}_{ \left\lbrace S_{t}&gt;H \right\rbrace } (S_{t})
+\end{equation}</p>
 
 <p>Unsurprisingly, we observe that the barrier clause generates a discount on the final price.</p>
 
@@ -315,9 +307,9 @@ C^{DOC,regular} (S_{t}, t, \sigma, r, H, K) &amp;= C^{vanilla} \left( S_{t}, t, 
 
 <p>When the barrier is in-the-money, our barrier condition is no longer satisfied if we just use the previous approach. We need to make some minor alterations to the options portfolio we intend to reflect. We should build a portfolio of derivatives whose value is zero at the barrier, while having exactly the value of a vanilla call option whenever the underlying asset price is higher. This is obtained by going long on one vanilla call struck at \(H\) and \(H-K\) units of a digital call also struck at \(H\). Reflect this portfolio to obtain the following pricing formula:</p>
 
-<p>\begin{aligned}
-C^{DOC,reverse} (S_{t}, t, \sigma, r, H, K) &amp;= C^{vanilla} \left( S_{t}, t, \sigma, r, H \right) \mathbb{1}_{ \left\lbrace S_{t}&gt;H \right\rbrace } (S_{t}) \\ &amp;+ (H-K) C^{digital} \left( S_{t}, t, \sigma, r, H \right) \mathbb{1}_{ \left\lbrace S_{t}&gt;H \right\rbrace } (S_{t}) \\ &amp;- \left( \frac{S_{t}}{H} \right)^{\alpha} C^{vanilla} \left( \frac{H^2}{S_{t}}, t, \sigma, r, H \right) \mathbb{1}_{ \left\lbrace S_{t}&gt;H \right\rbrace } (S_{t}) \\ &amp;- (H-K) \left( \frac{S_{t}}{H} \right)^{\alpha} C^{digital} \left( \frac{H^2}{S_{t}}, t, \sigma, r, H \right) \mathbb{1}_{ \left\lbrace S_{t}&gt;H \right\rbrace } (S_{t})
-\end{aligned}</p>
+<p>\begin{equation}
+C^{DOC,reverse} (S_{t}, t, \sigma, r, H, K) = C^{vanilla} \left( S_{t}, t, \sigma, r, H \right) \mathbb{1}_{ \left\lbrace S_{t}&gt;H \right\rbrace } (S_{t}) + (H-K) C^{digital} \left( S_{t}, t, \sigma, r, H \right) \mathbb{1}_{ \left\lbrace S_{t}&gt;H \right\rbrace } (S_{t}) - \left( \frac{S_{t}}{H} \right)^{\alpha} C^{vanilla} \left( \frac{H^2}{S_{t}}, t, \sigma, r, H \right) \mathbb{1}_{ \left\lbrace S_{t}&gt;H \right\rbrace } (S_{t}) - (H-K) \left( \frac{S_{t}}{H} \right)^{\alpha} C^{digital} \left( \frac{H^2}{S_{t}}, t, \sigma, r, H \right) \mathbb{1}_{ \left\lbrace S_{t}&gt;H \right\rbrace } (S_{t})
+\end{equation}</p>
 
 <figure style="display: inline-block; text-align: center; align-content:center; position: relative; float: left; overflow: hidden; margin: 0 20px 20px 0; max-width: 920px;">
   <img src="/assets/images/about-barrier-options/payoff_truncation.jpg" alt="reflected portfolio" style="max-width: 100%; height: auto;" />
@@ -400,7 +392,7 @@ Our estimated price is \(V=4.39(8)\$\). Assuming an approximately normal distrib
 \Phi = S_{T} - \min_{t= \tau} S_{\tau}
 \end{equation}</p>
 
-<p>We will obtain a pricing formula decomposing this contract in a portfolio of options that are either not path-dependent or whose path-dependency we can manage. Let \(t\) be some time before expiration. Let \(\tau(t)\) be the time where our asset reached it lowest price, that is let \(\tau(t) = \arg \min\_{t} S_{t}\). Intuitively, our portfolio must start with a plain vanilla call option, struck at \(S_{\tau(t)}\), given that surely we’ll have the right to buy the asset at such price. Then, our portfolio must take into account the possibility that the asset will fall even lower than \(S_{\tau(t)}\). We will add something to our portfolio that satisfies the following requirements:</p>
+<p>We will obtain a pricing formula decomposing this contract in a portfolio of options that are either not path-dependent or whose path-dependency we can manage. Let \(t\) be some time before expiration. Let \(\tau(t)\) be the time where our asset reached it lowest price, that is let \(\tau(t) = \arg \min _{t} S_{t}\). Intuitively, our portfolio must start with a plain vanilla call option, struck at \(S_{\tau(t)}\), given that surely we’ll have the right to buy the asset at such price. Then, our portfolio must take into account the possibility that the asset will fall even lower than \(S_{\tau(t)}\). We will add something to our portfolio that satisfies the following requirements:</p>
 <ul>
   <li>we must be able to price it using reflections;</li>
   <li>no benefit must be provided at expiration if \(S_{\tau(t)} = S_{\tau(T)}\);</li>
@@ -423,7 +415,7 @@ Our estimated price is \(V=4.39(8)\$\). Assuming an approximately normal distrib
 <p>You’ll be delighted to know that this integral allows for a closed form analytical solution, but solving the integral requires a certain bravery, a bit of time and a ton of paper. If you’re up for a nice integration challenge, go for it. You will find out that the solution is</p>
 
 <p>\begin{equation}
-S_{t}e^{-r(T-t)}N(d_{1})-S_{\tau(t)}e^{-r(T-t)}N(d_{2})+S_{t}e^{-r(T-t)} \sigma \sqrt(T-t) \left[ \frac{1}{\sqrt{2\pi}}  e^{- \frac{d_{1}^2}{2}}+d_{1}N(-d_{1}) \right]
+S_{t}e^{-r(T-t)}N(d_{1})-S_{\tau(t)}e^{-r(T-t)}N(d_{2})+S_{t}e^{-r(T-t)} \sigma \sqrt{T-t} \left[ \frac{1}{\sqrt{2\pi}}  e^{- \frac{d_{1}^2}{2}}+d_{1}N(-d_{1}) \right]
 \end{equation}</p>
 
 <p>where \(N(x)\) is the standard gaussian cdf. and \(d_{1}\) and \(d_{2}\) are the usual <em>Black-Scholes quantiles</em> evaluated for \(K=S_{\tau(t)}\) and \(S=S_{t}\). This expression is somewhat more complex if we allow for the presence of dividends, but the reasoning remains the same. Again feel free to try, I’m sure you’ll manage as it’s mostly a matter of making the right choices while integrating by parts.</p>
@@ -446,6 +438,11 @@ S_{t}e^{-r(T-t)}N(d_{1})-S_{\tau(t)}e^{-r(T-t)}N(d_{2})+S_{t}e^{-r(T-t)} \sigma 
   <li>Björk, Tomas, 2009. <em>“Arbitrage Theory in Continuous Time”</em>. Professor Björk passed away in 2021: although I never met him, I am still very grateful for this work of his from which I learned the fundamentals of finance in continuous time. A must-read for all who aspire to work in this field.</li>
   <li><a href="https://warwick.ac.uk/fac/soc/wbs/subjects/finance/research/wpaperseries/2004/04-211.pdf">Effects of intraday volatility on Monte Carlo estimates.</a></li>
   <li>Musiela, Mark &amp; Rutkowski, Marek, 2004. <em>“Martingale Methods in Financial Modelling”</em>.</li>
+</ul>
+
+<h3 id="updates">Updates</h3>
+<ul>
+  <li>12/10/2022 - Rolled back to MathJax version 2.7 to improve mobile-friendliness: TeX sections have been modified accordingly. Fixed some typos.</li>
 </ul>
 
                 </div>
