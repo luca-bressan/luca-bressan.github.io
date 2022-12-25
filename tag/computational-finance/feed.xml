@@ -1,0 +1,351 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<feed xmlns="http://www.w3.org/2005/Atom" >
+  <generator uri="https://jekyllrb.com/" version="3.9.2">Jekyll</generator>
+  <link href="http://localhost:4000/tag/computational-finance/feed.xml" rel="self" type="application/atom+xml" />
+  <link href="http://localhost:4000/" rel="alternate" type="text/html" />
+  <updated>2022-12-25T21:04:02+01:00</updated>
+  <id>http://localhost:4000/tag/computational-finance/feed.xml</id>
+
+  
+  
+  
+
+  
+    <title type="html">Luca Bressan - finance &amp;amp; statistics | </title>
+  
+
+  
+    <subtitle>My finance &amp; statistics blog</subtitle>
+  
+
+  
+
+  
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+      
+    
+  
+
+  
+  
+
+  
+    <entry>
+      <title type="html">“He’s giving away the numbers!”: facts about numerical integration (Numerical interpolation, part 1)</title>
+      <link href="http://localhost:4000/he-s-giving-the-numbers" rel="alternate" type="text/html" title="&quot;He&apos;s giving away the numbers!&quot;: facts about numerical integration (Numerical interpolation, part 1)" />
+      <published>2022-12-03T02:00:00+01:00</published>
+      <updated>2022-12-03T02:00:00+01:00</updated>
+      <id>http://localhost:4000/he-s-giving-the-numbers</id>
+      <content type="html" xml:base="http://localhost:4000/he-s-giving-the-numbers">&lt;p&gt;Cover photo by &lt;a href=&quot;https://unsplash.com/@waldemarbrandt67w?utm_source=unsplash&amp;amp;utm_medium=referral&amp;amp;utm_content=creditCopyText&quot;&gt;Waldemar Brandt&lt;/a&gt; on &lt;a href=&quot;https://unsplash.com/s/photos/lottery-extraction?utm_source=unsplash&amp;amp;utm_medium=referral&amp;amp;utm_content=creditCopyText&quot;&gt;Unsplash&lt;/a&gt;. In Italy, when someone is speaking nonsense or is saying something outrageously wrong, we say that he’s &lt;em&gt;“giving away the numbers”&lt;/em&gt;. Hopefully we’ll be able to retain our mental fitness and say a lot of very correct stuff, while still giving away some numbers in a literal sense.&lt;/p&gt;
+
+&lt;h3 id=&quot;what-you-should-know-before-reading-this-post&quot;&gt;What you should know before reading this post&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;Basic linear algebra&lt;/li&gt;
+  &lt;li&gt;Basic calculus&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;h1 id=&quot;the-quest-for-numerical-integration&quot;&gt;The quest for numerical integration&lt;/h1&gt;
+
+&lt;p&gt;There comes a point where our nice theoretical results, with closed formulas and all that jazz, are no longer sufficient to make a decision, give an estimate or complete our task. Sometimes we just need a number, a nicely written one using only digits, commas and some scientific notation for the adventurous. A particular class of problems that arises in obtaining our dear number is the one of &lt;em&gt;numerical integration&lt;/em&gt;. Riemann and Lebesgue integrals are &lt;strong&gt;not&lt;/strong&gt; particularly wieldy objects to begin with &lt;em&gt;(that’s the reason why they’re plenty of fun, no?)&lt;/em&gt; and Ito integrals &lt;strong&gt;are even worse&lt;/strong&gt;. In fact, for Ito intergrals, it’s quite hard to even state what a solution written with just digits is. Do we want a &lt;em&gt;path-wise solution&lt;/em&gt; or do we just need &lt;em&gt;some statistical properties to hold?&lt;/em&gt; We will try to get a grasp of all this tough stuff. But every nice journey begins with, well… the beginning. &lt;strong&gt;This is part of a series of 3 articles:&lt;/strong&gt;&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;🙋‍♂️ &lt;em&gt;Numerical (algebraic) interpolation&lt;/em&gt;, the basis for numerical integration;&lt;/li&gt;
+  &lt;li&gt;Numerical approximation of Riemann integrals;&lt;/li&gt;
+  &lt;li&gt;Numerical approximation of Ito integrals, specifically targeting the issue of &lt;em&gt;finding a weakly converging approximation scheme&lt;/em&gt; for processes built on the browninan motion (spoiler: this is what we need to price our beloved financial products).&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;This time we are going to face the task of algebraic interpolation. While this article is going to be pretty far from being exhaustive &lt;em&gt;(to be honest, there are 300 pages long books about interpolation which are pretty far from being exhaustive)&lt;/em&gt;, it will serve as a starting point for our journey and I hope it will stimulate your curiosity. Well, enough preambles: &lt;em&gt;1, 2, 3, take a deep breath and… let’s get going!&lt;/em&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;what-even-is-interpolation&quot;&gt;What even is interpolation?&lt;/h3&gt;
+
+&lt;p&gt;The problem of interpolation arises when we want to find a function \(f(x)\) such that given a point cloud \((x_{i},y_{i})_{i = 1, 2, 3, \dots}\) we have \(f(x_{i})=y_{i}\). In particular, &lt;em&gt;algebraic interpolation is the issue of finding \(f\) among the family of polynomials or piecewise polynomial functions&lt;/em&gt;. When the function is only piecewise polynomial, we are talking about &lt;em&gt;spline interpolation&lt;/em&gt;. A case of particular interest is when there exists a known function \(\varphi(x)\) such that \(y = \varphi(x)\), where \(\varphi(x)\) has some unpleasant properties that make it difficult to evaluate. Another scenario where interpolation is useful is when \(\varphi(x)\) has some known properties but doesn’t allow for an explicit closed form. In this case we may still want to use a polynomial to approximate \(\varphi\), since &lt;em&gt;polynomials are easy to handle and evaluate&lt;/em&gt;. &lt;strong&gt;There will be errors in doing this:&lt;/strong&gt; we are going to measure them using the \(\infty\)-norm.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h6 id=&quot;definition-approximation-error&quot;&gt;Definition. &lt;em&gt;(Approximation error)&lt;/em&gt;&lt;/h6&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Given an interval \(I \subset \mathbb{R}\) and a function \(\varphi: I \to \mathbb{R}\) we define the &lt;em&gt;approximation error&lt;/em&gt; obtained approximating \(\varphi\) over \(I\) using a polynomial \(f\), \(E(f;\varphi)_{I}\) as&lt;/p&gt;
+
+&lt;p&gt;\begin{equation}
+              E_{I}(f; \varphi) = \| f - \varphi \| _{ \infty } \restriction _{I}
+\end{equation}&lt;/p&gt;
+
+&lt;p style=&quot;text-align: right&quot;&gt;∎&lt;/p&gt;
+
+&lt;p&gt;This is our first glimpse of the essential nature of numerical analysis: knowing that you are wrong and by how much is even more important than the number you get at the end. Just as a note, sometimes you may mitigate this limitation of numerical analysis using tools like &lt;em&gt;symbolic machine algebra&lt;/em&gt;.
+In theory, we can be quite successful at approximating functions by polynomials, we just need our functions to be continuous:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h6 id=&quot;theorem-weierstrass-theorem-on-approximation-errors&quot;&gt;Theorem. &lt;em&gt;(Weierstrass Theorem on approximation errors)&lt;/em&gt;&lt;/h6&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Let \(\varphi\) be a continuous function on some interval \(I\). Then for any \(\varepsilon &amp;gt; 0\) there exists \(n \in \mathbb{N}\) and a polynomial \(P_n\) of degree \(n\) such that \(E_{I}(P_n; \varphi) &amp;lt; \varepsilon\)&lt;/p&gt;
+
+&lt;p style=&quot;text-align: right&quot;&gt;∎&lt;/p&gt;
+
+&lt;p&gt;&lt;em&gt;J-L. Lagrange in 1795&lt;/em&gt; had the brilliant idea to define a vector space of polynomials with degree equal to the number of points in the cloud minus one. Lagrange polynomials have the nice property of &lt;strong&gt;having unit value&lt;/strong&gt; on the various \(x_{i}\), and &lt;strong&gt;they constitute a basis&lt;/strong&gt; for the linear space of polynomials, so that the interpolating polynomial is just a vector whose components are the \(y_{i}\). They look as follows:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h6 id=&quot;definition-lagrange-polynomials&quot;&gt;Definition. &lt;em&gt;(Lagrange polynomials)&lt;/em&gt;&lt;/h6&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Given a point cloud \((x_{i},y_{i})_{i = 1, 2, 3, \dots, n}\) we define the &lt;em&gt;Lagrange basis&lt;/em&gt; of the \(n\)-degree polynomials space as&lt;/p&gt;
+
+&lt;p&gt;\begin{equation}
+              l_{k}=\frac{\pi_{n}(x)}{\pi_{n}’(x) (x-x_{k})}
+\end{equation}&lt;/p&gt;
+
+&lt;p&gt;where \(\pi_{n}=(x-x_{1})(x-x_{2}) \dots (x-x_{n})\).&lt;/p&gt;
+
+&lt;p style=&quot;text-align: right&quot;&gt;∎&lt;/p&gt;
+
+&lt;p&gt;Evaluating the Lagrange interpolating polynomial \(L_{n}=y_{1}l_{1} + \dots + y_{n}l_{n}\) has computational complexity \(\mathcal{O}(n^{2})\), which is quite nice. Anything polynomial is actually nice, NP-hard problems are a massive issue.&lt;/p&gt;
+
+&lt;h3 id=&quot;where-should-i-put-my-x_i&quot;&gt;Where should I put my \(x_{i}\)?&lt;/h3&gt;
+
+&lt;p&gt;Choosing where to evaluate the “hard” function before approximation &lt;em&gt;plays a massive role&lt;/em&gt; in how good our interpolation will be. In fact we have this theorem:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h6 id=&quot;theorem-first-fabers-theorem&quot;&gt;Theorem. &lt;em&gt;(First Faber’s theorem)&lt;/em&gt;&lt;/h6&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;For any &lt;strong&gt;a priori&lt;/strong&gt; known algorithm for determining the \(x_{i}\) &lt;em&gt;independently of the target function&lt;/em&gt; \(\varphi\), there exist both a target function such that the approximation error &lt;em&gt;does not converge&lt;/em&gt; to \(0\) as the number of \(x_{i}\) increases and one such that the approximation &lt;em&gt;does indeed converge&lt;/em&gt; to \(0\) as \(n\) goes to infinity.&lt;/p&gt;
+
+&lt;p style=&quot;text-align: right&quot;&gt;∎&lt;/p&gt;
+
+&lt;p&gt;So, no matter how smart we are in pre-determining the \(x_{i}\) (from here on called nodes), &lt;em&gt;sometimes we get things terribly wrong&lt;/em&gt;. But we can still be pretty smart. The following theorem tells us that we can &lt;em&gt;bound the error by means of a recursive relation&lt;/em&gt;:&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h6 id=&quot;theorem-lebesgue-constants-theorem&quot;&gt;Theorem. &lt;em&gt;(Lebesgue constants theorem)&lt;/em&gt;&lt;/h6&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Let \(\varphi\) be a continuous target function on some interval \(I\). Then the following relation holds&lt;/p&gt;
+
+&lt;p&gt;\begin{equation}
+              E_{I}(L_{n}; \varphi) \leq (1+\Lambda_{n}((x_{i})_{i = 1, \dots, n})) \mathcal{E}_{n-1}(\varphi)
+\end{equation}&lt;/p&gt;
+
+&lt;p&gt;where \(\Lambda_{n} = \| \lambda_{n} \| _{\infty} \restriction_{I}\) are called Lebesgue’s constants, the \(n\)-th Lebesgue function \(\lambda_{n}\) is the sum of the absolute values of the Lagrange basis polynomials and \(\mathcal{E}(\varphi)\) is the best possible polynomial approximation of \(\varphi\) using polynomials of degree \(n\).&lt;/p&gt;
+
+&lt;p style=&quot;text-align: right&quot;&gt;∎&lt;/p&gt;
+
+&lt;p&gt;Given the recursive nature of this error bound, we would like to find an algorithm for selecting the nodes that allows us to have the Lebesgue constants grow as slowly as possible as we increase the number of nodes. There is, however, a &lt;em&gt;limit to how slowly we can have them grow&lt;/em&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h6 id=&quot;theorem-second-fabers-theorem&quot;&gt;Theorem. &lt;em&gt;(Second Faber’s theorem)&lt;/em&gt;&lt;/h6&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;For any choice of node system, we have \(\Lambda_{n}((x_{i})_{i = 1, \dots, n}) \geq \frac{1}{12} \log (n)\)&lt;/p&gt;
+
+&lt;p style=&quot;text-align: right&quot;&gt;∎&lt;/p&gt;
+
+&lt;p&gt;Therefore, we have that &lt;em&gt;if Lebesgue constants grow logarithmically, the node system has optimal scaling&lt;/em&gt;. Unsurprisingly, the smoothness of the target function also plays an important role.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h6 id=&quot;theorem&quot;&gt;Theorem&lt;/h6&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Let \(\varphi\) be a \(k\)-times differentiable target function on some interval \(I\). Then the following relation holds&lt;/p&gt;
+
+&lt;p&gt;\begin{equation}
+              E_{I}(L_{n}; \varphi) \leq c \frac{\log n}{n^k}
+\end{equation}&lt;/p&gt;
+
+&lt;p&gt;where \(c\) is independent of \(k\) and \(n\)&lt;/p&gt;
+
+&lt;p style=&quot;text-align: right&quot;&gt;∎&lt;/p&gt;
+
+&lt;p&gt;This is it for the general facts. Let’s have a small recap befor moving on:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;interpolating basically means joining points in a nice way. &lt;em&gt;And polynomials are &lt;strong&gt;really&lt;/strong&gt; nice&lt;/em&gt;;&lt;/li&gt;
+  &lt;li&gt;Weierstrass’ theorem makes it looks like algebraic interpolation can in theory be &lt;strong&gt;infinitely effective&lt;/strong&gt;;&lt;/li&gt;
+  &lt;li&gt;Lagrange gave us a way of choosing the coefficients for our interpolating polynomial &lt;em&gt;that just works&lt;/em&gt;;&lt;/li&gt;
+  &lt;li&gt;&lt;strong&gt;we can estimate errors&lt;/strong&gt;;&lt;/li&gt;
+  &lt;li&gt;Faber’s theorems shattered our dreams of a &lt;em&gt;universally good way of picking the interpolation nodes&lt;/em&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Our main focus is the choice of the node system, let’s see some of those and let’s try to say something about their performance.&lt;/p&gt;
+
+&lt;h3 id=&quot;some-notable-node-systems&quot;&gt;Some notable node systems&lt;/h3&gt;
+
+&lt;p&gt;The first thing we would like to do is to use evenly spaced nodes across our interval. This seemingly reasonable choice is, unfortunately, &lt;strong&gt;an awful one&lt;/strong&gt;.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h6 id=&quot;theorem-tureckij-theorem&quot;&gt;Theorem. &lt;em&gt;(Tureckij theorem)&lt;/em&gt;&lt;/h6&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;For an evenly spaced system of nodes the Lebesgue constants have the following scaling:&lt;/p&gt;
+
+&lt;p&gt;\begin{equation}
+              \Lambda _ {n} ((x_{i})_{i = 1, \dots, n})) \sim \frac{2^{n}}{e n \log n}
+\end{equation}&lt;/p&gt;
+
+&lt;p style=&quot;text-align: right&quot;&gt;∎&lt;/p&gt;
+
+&lt;p&gt;This is related to an unpleasant phenomenon that we are going to see later, called the &lt;em&gt;Runge effect&lt;/em&gt;. This leads many practitioners to &lt;em&gt;limit the usage of evenly spaced nodes only with polynomials of degree at most equal to &lt;strong&gt;nine&lt;/strong&gt;&lt;/em&gt;.
+We have smarter choices available, but first we need some extra notions.&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h6 id=&quot;definition-orthogonal-polynomials&quot;&gt;Definition. &lt;em&gt;(Orthogonal polynomials)&lt;/em&gt;&lt;/h6&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Two degree \(n\) polynomials \(p\) and \(q\) defined on the interval \([-1,1]\) are said to be &lt;em&gt;orthogonal&lt;/em&gt; with respect to the \(\alpha , \beta\)-Jacobi weighted &lt;em&gt;inner product&lt;/em&gt; if they satisfy the following condition&lt;/p&gt;
+
+&lt;p&gt;\begin{equation}
+              \int_{-1}^{1} p(x) q(x) (1-x)^{\alpha}(1+x)^{\beta} dx = 0
+\end{equation}&lt;/p&gt;
+
+&lt;p style=&quot;text-align: right&quot;&gt;∎&lt;/p&gt;
+
+&lt;p&gt;Note that &lt;em&gt;we can always traslate our approximation problem from a generic bounded interval into&lt;/em&gt; \([-1,1]\) &lt;em&gt;by means of an affine transform&lt;/em&gt;. The roots of the orthogonal polynomial defined as before have several nice properties. We will refer to the node system given by these roots as \(w^{\alpha , \beta}\).&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;h6 id=&quot;theorem-szegő-theorem&quot;&gt;Theorem. &lt;em&gt;(Szegő theorem)&lt;/em&gt;&lt;/h6&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;If \(\alpha\) and \(\beta\) belong in \((-1,\frac{1}{2}]\), then the &lt;em&gt;scaling of the Lebesgue constants&lt;/em&gt; of \(w^{\alpha , \beta}\) &lt;strong&gt;is logarithmic&lt;/strong&gt;, and it is polynomial otherwise.&lt;/p&gt;
+
+&lt;p style=&quot;text-align: right&quot;&gt;∎&lt;/p&gt;
+
+&lt;p&gt;Szegő theorem therefore states &lt;em&gt;how to reach that optimal logarithmic scaling of the error bound we were looking for&lt;/em&gt;. Sometimes, a process called &lt;em&gt;enrichment&lt;/em&gt; is needed even when we are within the conditions stated by the theorem. We won’t talk about this process, but it basically is a way of &lt;em&gt;adding nodes to improve performance&lt;/em&gt;. We will perform practical tests on two system of nodes of particular importance: the evenly spaced nodes &lt;em&gt;(that we will indicate with&lt;/em&gt; \(\mathcal{E}\) &lt;em&gt;)&lt;/em&gt; and the the roots of the Chebyshev polynomials of the first kind &lt;em&gt;(&lt;/em&gt; \(P_{n} = \cos (n \arccos \theta)\) &lt;em&gt;)&lt;/em&gt;, which is \(w^{- \frac{1}{2} , -\frac{1}{2}}\). When using \(w^{- \frac{1}{2} , - \frac{1}{2}}\), &lt;em&gt;it can be proved that for differentiable target functions the approximation error is guaranteed to &lt;strong&gt;converge to zero&lt;/strong&gt;&lt;/em&gt;. I encourage you to research \(w^{0 , 0}\), which are the roots of the &lt;em&gt;Legendre polynomials&lt;/em&gt; and \(w^{\frac{1}{2} , \frac{1}{2}}\) which are the roots of the &lt;em&gt;Chebyshev polynomials of the second kind&lt;/em&gt;. These two node system &lt;em&gt;need enrichment to work optimally&lt;/em&gt;. It’s quite remarkable how Jacobi weights can describe a family of polynomials that contains so many notable specimens.&lt;/p&gt;
+
+&lt;h3 id=&quot;node-systems-tested&quot;&gt;Node systems, tested&lt;/h3&gt;
+
+&lt;p&gt;First of all we need to evaluate the roots of the Chebyshev polynomials: playing around with the definition will show that our roots are given by \(x_{i}=cos(\frac{\pi (i+\frac{1}{2})}{n})\) as \(i\) spans over \(0, \dots, n-1\). This is implemented in &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;chebyshevPolynomialRoots.m&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;          function xNodes = chebyshevPolynomialRoots( degree, targetIntervalLowerBound, targetIntervalUpperBound )
+            xRaw = zeros( degree, 1 );    
+            for i = 0 : degree - 1 
+                    xRaw( i + 1 ) = cos( pi * ( i + 0.5) / degree );
+            end
+            xRaw = sort( xRaw );
+            xNodes = 0.5 * xRaw ...
+                        * ( targetIntervalUpperBound - targetIntervalLowerBound ) ...
+                        + mean( [ targetIntervalLowerBound targetIntervalUpperBound ] );
+          end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;Now we need a routine to evaluate our interpolating polynomial. Here it is, &lt;code class=&quot;language-plaintext highlighter-rouge&quot;&gt;lagrangePoly.m&lt;/code&gt;:&lt;/p&gt;
+
+&lt;div class=&quot;language-plaintext highlighter-rouge&quot;&gt;&lt;div class=&quot;highlight&quot;&gt;&lt;pre class=&quot;highlight&quot;&gt;&lt;code&gt;          function y = lagrangePoly( nodes, components, x )
+              piCoeff = poly( nodes );
+              dPiCoeff = polyder( piCoeff );
+              y = zeros( 1, length( x ) );
+              for i = 1 : length( components )
+                    y = y + ...
+                        components(i) * ...
+                        polyval( piCoeff, x ) ./ ...
+                        ( polyval( dPiCoeff, nodes( i ) ) .* ( x - nodes( i ) ) );
+              end
+          end
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/div&gt;
+
+&lt;p&gt;This code allows us to evaluate the Lebesgue functions for different combinations of number of nodes and nodes system. First of all we will analyze the behavior of the Lebesgue functions in a system with evenly spaced nodes: note how &lt;strong&gt;the magnitude explodes near the edges of the interpolation interval&lt;/strong&gt;. This is tightly related to the Runge phenomenon. Think about the definition of the Lebesgue functions: &lt;em&gt;why is their value&lt;/em&gt; \(1\) &lt;em&gt;on the nodes?&lt;/em&gt;&lt;/p&gt;
+
+&lt;figure style=&quot;display: inline-block; text-align: center; align-content:center; position: relative; float: left; overflow: hidden; margin: 0 20px 20px 0; max-width: 920px;&quot;&gt;
+  &lt;img src=&quot;/assets/images/he-s-giving-the-numbers/lambda_e.gif&quot; alt=&quot;Lebesgue functions&quot; style=&quot;max-width: 100%; height: auto;&quot; /&gt;
+  &lt;figcaption style=&quot;position: absolute; text-align: center; align-content:center; background: rgba(0,0,0,0.75); color: white; padding: 10px 20px; opacity: 1; bottom: 0; font-size: 12px; line-height: 18px;&quot;&gt;Plots of the Lebesgue function with the number of nodes going from 1 to 10, evenly spaced nodes system. &lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;This is how things change when we switch to the Chebyshev node system. The magnitude of the functions varies more evenly across the interval, yielding a better bound for the interpolation error.&lt;/p&gt;
+&lt;figure style=&quot;display: inline-block; text-align: center; align-content:center; position: relative; float: left; overflow: hidden; margin: 0 20px 20px 0; max-width: 920px;&quot;&gt;
+  &lt;img src=&quot;/assets/images/he-s-giving-the-numbers/lambda_cheby.gif&quot; alt=&quot;Lebesgue functions&quot; style=&quot;max-width: 100%; height: auto;&quot; /&gt;
+  &lt;figcaption style=&quot;position: absolute; text-align: center; align-content:center; background: rgba(0,0,0,0.75); color: white; padding: 10px 20px; opacity: 1; bottom: 0; font-size: 12px; line-height: 18px;&quot;&gt;Plots of the Lebesgue function with the number of nodes going from 1 to 10, Chebyshev nodes system. &lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;p&gt;Lastly, we take a look at the Runge phenomenon. When approximating \(\frac{1}{1+x^2}\) using algebraic interpolation on a system of 32 evenly spaced nodes we can see instabilities on the edges of the interval. This is related to the behavior of the Lebesgue functions that we saw in a previous figure. If we were to use the Chebyshev node system, the plot of the interpolated approximation and the one of the true function would be pretty much identical.&lt;/p&gt;
+&lt;figure style=&quot;display: inline-block; text-align: center; align-content:center; position: relative; float: left; overflow: hidden; margin: 0 20px 20px 0; max-width: 920px;&quot;&gt;
+  &lt;img src=&quot;/assets/images/he-s-giving-the-numbers/runge.jpg&quot; alt=&quot;Runge effect&quot; style=&quot;max-width: 100%; height: auto;&quot; /&gt;
+  &lt;figcaption style=&quot;position: absolute; text-align: center; align-content:center; background: rgba(0,0,0,0.75); color: white; padding: 10px 20px; opacity: 1; bottom: 0; font-size: 12px; line-height: 18px;&quot;&gt;Runge effect approximating the arctangent derivative using 32 evenly spaced nodes. &lt;/figcaption&gt;
+&lt;/figure&gt;
+
+&lt;h3 id=&quot;what-about-splines&quot;&gt;What about splines?&lt;/h3&gt;
+
+&lt;p&gt;Splines can be more advantageous as &lt;em&gt;they usually yield good results even when using very simple interpolating functions&lt;/em&gt;. Some of the most common splines that are used in practical applications are &lt;strong&gt;linear&lt;/strong&gt; and &lt;strong&gt;cubic&lt;/strong&gt; splines &lt;em&gt;(when dealing with functions from&lt;/em&gt; \(\mathbb{R}\) &lt;em&gt;to&lt;/em&gt; \(\mathbb{R}\) &lt;em&gt;)&lt;/em&gt; and &lt;strong&gt;Beziér&lt;/strong&gt; splines &lt;em&gt;(when dealing with curves in a space or in a plane)&lt;/em&gt;. Usually one will find that &lt;em&gt;the approximation error with splines is a function of the distance between the nodes&lt;/em&gt; \(h\). Consider this example: &lt;em&gt;how can we bound the spline approximation error for a twice differentiable function over a system of evenly spaced nodes?&lt;/em&gt;
+Let \(x_{i}\) and \(x_{i+1}\) be two consecutive nodes, and let \(x\) be a point in between these two nodes. Let \(s(x)=a_{s}x+b_{s}\) be the restriction of the spline to the interval \([ x_{i}, x_{i+1} ]\).
+Let \(q\) be a constant, independent of \(x\).
+Define the function \(g(y)\) to be the function such that&lt;/p&gt;
+
+&lt;p&gt;\begin{equation}
+  F(x)=f(x)-s(x)-q(x-x_{i})(x-x_{i+1})=0
+\end{equation}&lt;/p&gt;
+
+&lt;p&gt;\(F(x)\) has three distinct roots in \([ x_{i}, x_{i+1} ]\), therefore &lt;em&gt;Rolle’s theorem states that we have two roots&lt;/em&gt; for \(F&apos;(x)\). Again, use Rolle’s theorem to argue that \(F&apos;&apos;(x)\) &lt;em&gt;has a root&lt;/em&gt; \(\zeta\) &lt;em&gt;in&lt;/em&gt; \([ x_{i}, x_{i+1} ]\). \(s(x)\) is a piecewise linear function, therefore &lt;em&gt;its second derivative is null&lt;/em&gt;. We may state that&lt;/p&gt;
+
+&lt;p&gt;\begin{equation}
+  \frac{d^{2}F}{dx^2}(\zeta)=\frac{d^{2}f}{dx^2}(\zeta) - 2q = 0
+\end{equation}&lt;/p&gt;
+
+&lt;p&gt;which means that \(q=\frac{1}{2}f&apos;&apos;(\zeta)\). Plug this in the definition of \(F(x)\) to state that&lt;/p&gt;
+
+&lt;p&gt;\begin{equation}
+  f(x)-s(x) = \frac{1}{2} \frac{d^{2}f}{dx^2} (\zeta)(x-x_{i})(x-x_{i+1})
+\end{equation}&lt;/p&gt;
+
+&lt;p&gt;and then assume the maximum over all possible values of \(x\) and all possible values of \(\zeta\) to obtain \(\|f(x)-s(x)\| \leq \frac{h^2}{8}M_{2}\), where \(M_{2} = \max _{[ x_{i}, x_{i+1} ]} \|f&apos;&apos;(x)\|\). You may think that this means that we should choose a number of nodes which is as high as possible. While this may work in theory, in practice &lt;em&gt;there is a threshold where machine arithmetic errors take over&lt;/em&gt; and deteriorate our results.&lt;/p&gt;
+
+&lt;h3 id=&quot;conclusions&quot;&gt;Conclusions&lt;/h3&gt;
+
+&lt;p&gt;This first article briefly covered many concepts in algebraic interpolation. This is the foundation to then move forward and understand what numerical intergration is about. As usual, I’d like give you a list of possible topics to read more, but keep in mind that the world of numerical interpolation is quite extensive. Furthermore, we grazed some topics from other fields of mathematics, such as &lt;em&gt;orthogonal polynomial with respect to a weight&lt;/em&gt;. Some nice topics you may be interested in:&lt;/p&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;em&gt;what if we change interpolating functions?&lt;/em&gt; A possible choice is to use sines and cosines: as &lt;em&gt;algebraic interpolation is a natural consequence of the existence of the Taylor series&lt;/em&gt; for a function, &lt;em&gt;armonic interpolation is a natural consequence of the existence of Fourier series&lt;/em&gt;;&lt;/li&gt;
+  &lt;li&gt;efficency is key when we want to implement our numerical methods, so much so that you need to rethink even the basics such as evaluating polynomials. Check how &lt;em&gt;Horner’s method&lt;/em&gt; works and get yourself acquainted with big-O’s and other performance asymptotics;&lt;/li&gt;
+  &lt;li&gt;weighted functional inner products are of fundamental importance in some fields of physics. Check how Laguerre polynomials &lt;em&gt;(orthogonal polynomials with respect to the exponential function)&lt;/em&gt; are used in modelling &lt;em&gt;hydrogen-like atoms&lt;/em&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;As always, feel free to reach out to me on &lt;a href=&quot;https://linkedin.com/in/lbressan&quot;&gt;Linkedin&lt;/a&gt; or &lt;a href=&quot;https://github.com/luca-bressan&quot;&gt;GitHub&lt;/a&gt; if you want to suggest improvements or if you want to just have a chat about this. I hope that you enjoyed!&lt;/p&gt;
+
+&lt;h3 id=&quot;bibliography-and-further-reading&quot;&gt;Bibliography and further reading&lt;/h3&gt;
+
+&lt;ul&gt;
+  &lt;li&gt;&lt;a href=&quot;https://github.com/luca-bressan/blog-resources/blob/6e92793226fdab88d5801db6d2eb079ad6d45d14/approssimazione_algebrica_tna2020.pdf&quot;&gt;Approssimazione algebrica col metodo dei polinomi di Lagrange&lt;/a&gt; (in Italian). This is some work I did as an undergrad which served as a foundation for this article. It contains a lot of practical examples and in-depth considerations about the stuff we talked about;&lt;/li&gt;
+  &lt;li&gt;Rodriguez, Giuseppe, 2008. &lt;em&gt;“Algoritmi Numerici”&lt;/em&gt; (in Italian);&lt;/li&gt;
+  &lt;li&gt;Fermo, Luisa, 2018. &lt;em&gt;“Dispense per il corso di Teoria Numerica dell’ Approssimazione”&lt;/em&gt; (in Italian);&lt;/li&gt;
+  &lt;li&gt;&lt;a href=&quot;https://en.wikipedia.org/w/index.php?title=Laguerre_polynomials&amp;amp;oldid=1127720816&quot;&gt;Laguerre polynomials.&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content>
+
+      
+      
+      
+      
+      
+
+      <author>
+          <name>Luca Bressan</name>
+        
+        
+      </author>
+
+      
+
+      
+        <category term="Computational-Finance" />
+      
+
+      
+        <summary type="html">Cover photo by Waldemar Brandt on Unsplash. In Italy, when someone is speaking nonsense or is saying something outrageously wrong, we say that he’s “giving away the numbers”. Hopefully we’ll be able to retain our mental fitness and say a lot of very correct stuff, while still giving away some numbers in a literal sense. What you should know before reading this post Basic linear algebra Basic calculus The quest for numerical integration There comes a point where our nice theoretical results, with closed formulas and all that jazz, are no longer sufficient to make a decision, give an estimate or complete our task. Sometimes we just need a number, a nicely written one using only digits, commas and some scientific notation for the adventurous. A particular class of problems that arises in obtaining our dear number is the one of numerical integration. Riemann and Lebesgue integrals are not particularly wieldy objects to begin with (that’s the reason why they’re plenty of fun, no?) and Ito integrals are even worse. In fact, for Ito intergrals, it’s quite hard to even state what a solution written with just digits is. Do we want a path-wise solution or do we just need some statistical properties to hold? We will try to get a grasp of all this tough stuff. But every nice journey begins with, well… the beginning. This is part of a series of 3 articles: 🙋‍♂️ Numerical (algebraic) interpolation, the basis for numerical integration; Numerical approximation of Riemann integrals; Numerical approximation of Ito integrals, specifically targeting the issue of finding a weakly converging approximation scheme for processes built on the browninan motion (spoiler: this is what we need to price our beloved financial products). This time we are going to face the task of algebraic interpolation. While this article is going to be pretty far from being exhaustive (to be honest, there are 300 pages long books about interpolation which are pretty far from being exhaustive), it will serve as a starting point for our journey and I hope it will stimulate your curiosity. Well, enough preambles: 1, 2, 3, take a deep breath and… let’s get going! What even is interpolation? The problem of interpolation arises when we want to find a function \(f(x)\) such that given a point cloud \((x_{i},y_{i})_{i = 1, 2, 3, \dots}\) we have \(f(x_{i})=y_{i}\). In particular, algebraic interpolation is the issue of finding \(f\) among the family of polynomials or piecewise polynomial functions. When the function is only piecewise polynomial, we are talking about spline interpolation. A case of particular interest is when there exists a known function \(\varphi(x)\) such that \(y = \varphi(x)\), where \(\varphi(x)\) has some unpleasant properties that make it difficult to evaluate. Another scenario where interpolation is useful is when \(\varphi(x)\) has some known properties but doesn’t allow for an explicit closed form. In this case we may still want to use a polynomial to approximate \(\varphi\), since polynomials are easy to handle and evaluate. There will be errors in doing this: we are going to measure them using the \(\infty\)-norm. Definition. (Approximation error) Given an interval \(I \subset \mathbb{R}\) and a function \(\varphi: I \to \mathbb{R}\) we define the approximation error obtained approximating \(\varphi\) over \(I\) using a polynomial \(f\), \(E(f;\varphi)_{I}\) as \begin{equation} E_{I}(f; \varphi) = \| f - \varphi \| _{ \infty } \restriction _{I} \end{equation} ∎ This is our first glimpse of the essential nature of numerical analysis: knowing that you are wrong and by how much is even more important than the number you get at the end. Just as a note, sometimes you may mitigate this limitation of numerical analysis using tools like symbolic machine algebra. In theory, we can be quite successful at approximating functions by polynomials, we just need our functions to be continuous: Theorem. (Weierstrass Theorem on approximation errors) Let \(\varphi\) be a continuous function on some interval \(I\). Then for any \(\varepsilon &amp;gt; 0\) there exists \(n \in \mathbb{N}\) and a polynomial \(P_n\) of degree \(n\) such that \(E_{I}(P_n; \varphi) &amp;lt; \varepsilon\) ∎ J-L. Lagrange in 1795 had the brilliant idea to define a vector space of polynomials with degree equal to the number of points in the cloud minus one. Lagrange polynomials have the nice property of having unit value on the various \(x_{i}\), and they constitute a basis for the linear space of polynomials, so that the interpolating polynomial is just a vector whose components are the \(y_{i}\). They look as follows: Definition. (Lagrange polynomials) Given a point cloud \((x_{i},y_{i})_{i = 1, 2, 3, \dots, n}\) we define the Lagrange basis of the \(n\)-degree polynomials space as \begin{equation} l_{k}=\frac{\pi_{n}(x)}{\pi_{n}’(x) (x-x_{k})} \end{equation} where \(\pi_{n}=(x-x_{1})(x-x_{2}) \dots (x-x_{n})\). ∎ Evaluating the Lagrange interpolating polynomial \(L_{n}=y_{1}l_{1} + \dots + y_{n}l_{n}\) has computational complexity \(\mathcal{O}(n^{2})\), which is quite nice. Anything polynomial is actually nice, NP-hard problems are a massive issue. Where should I put my \(x_{i}\)? Choosing where to evaluate the “hard” function before approximation plays a massive role in how good our interpolation will be. In fact we have this theorem: Theorem. (First Faber’s theorem) For any a priori known algorithm for determining the \(x_{i}\) independently of the target function \(\varphi\), there exist both a target function such that the approximation error does not converge to \(0\) as the number of \(x_{i}\) increases and one such that the approximation does indeed converge to \(0\) as \(n\) goes to infinity. ∎ So, no matter how smart we are in pre-determining the \(x_{i}\) (from here on called nodes), sometimes we get things terribly wrong. But we can still be pretty smart. The following theorem tells us that we can bound the error by means of a recursive relation: Theorem. (Lebesgue constants theorem) Let \(\varphi\) be a continuous target function on some interval \(I\). Then the following relation holds \begin{equation} E_{I}(L_{n}; \varphi) \leq (1+\Lambda_{n}((x_{i})_{i = 1, \dots, n})) \mathcal{E}_{n-1}(\varphi) \end{equation} where \(\Lambda_{n} = \| \lambda_{n} \| _{\infty} \restriction_{I}\) are called Lebesgue’s constants, the \(n\)-th Lebesgue function \(\lambda_{n}\) is the sum of the absolute values of the Lagrange basis polynomials and \(\mathcal{E}(\varphi)\) is the best possible polynomial approximation of \(\varphi\) using polynomials of degree \(n\). ∎ Given the recursive nature of this error bound, we would like to find an algorithm for selecting the nodes that allows us to have the Lebesgue constants grow as slowly as possible as we increase the number of nodes. There is, however, a limit to how slowly we can have them grow. Theorem. (Second Faber’s theorem) For any choice of node system, we have \(\Lambda_{n}((x_{i})_{i = 1, \dots, n}) \geq \frac{1}{12} \log (n)\) ∎ Therefore, we have that if Lebesgue constants grow logarithmically, the node system has optimal scaling. Unsurprisingly, the smoothness of the target function also plays an important role. Theorem Let \(\varphi\) be a \(k\)-times differentiable target function on some interval \(I\). Then the following relation holds \begin{equation} E_{I}(L_{n}; \varphi) \leq c \frac{\log n}{n^k} \end{equation} where \(c\) is independent of \(k\) and \(n\) ∎ This is it for the general facts. Let’s have a small recap befor moving on: interpolating basically means joining points in a nice way. And polynomials are really nice; Weierstrass’ theorem makes it looks like algebraic interpolation can in theory be infinitely effective; Lagrange gave us a way of choosing the coefficients for our interpolating polynomial that just works; we can estimate errors; Faber’s theorems shattered our dreams of a universally good way of picking the interpolation nodes. Our main focus is the choice of the node system, let’s see some of those and let’s try to say something about their performance. Some notable node systems The first thing we would like to do is to use evenly spaced nodes across our interval. This seemingly reasonable choice is, unfortunately, an awful one. Theorem. (Tureckij theorem) For an evenly spaced system of nodes the Lebesgue constants have the following scaling: \begin{equation} \Lambda _ {n} ((x_{i})_{i = 1, \dots, n})) \sim \frac{2^{n}}{e n \log n} \end{equation} ∎ This is related to an unpleasant phenomenon that we are going to see later, called the Runge effect. This leads many practitioners to limit the usage of evenly spaced nodes only with polynomials of degree at most equal to nine. We have smarter choices available, but first we need some extra notions. Definition. (Orthogonal polynomials) Two degree \(n\) polynomials \(p\) and \(q\) defined on the interval \([-1,1]\) are said to be orthogonal with respect to the \(\alpha , \beta\)-Jacobi weighted inner product if they satisfy the following condition \begin{equation} \int_{-1}^{1} p(x) q(x) (1-x)^{\alpha}(1+x)^{\beta} dx = 0 \end{equation} ∎ Note that we can always traslate our approximation problem from a generic bounded interval into \([-1,1]\) by means of an affine transform. The roots of the orthogonal polynomial defined as before have several nice properties. We will refer to the node system given by these roots as \(w^{\alpha , \beta}\). Theorem. (Szegő theorem) If \(\alpha\) and \(\beta\) belong in \((-1,\frac{1}{2}]\), then the scaling of the Lebesgue constants of \(w^{\alpha , \beta}\) is logarithmic, and it is polynomial otherwise. ∎ Szegő theorem therefore states how to reach that optimal logarithmic scaling of the error bound we were looking for. Sometimes, a process called enrichment is needed even when we are within the conditions stated by the theorem. We won’t talk about this process, but it basically is a way of adding nodes to improve performance. We will perform practical tests on two system of nodes of particular importance: the evenly spaced nodes (that we will indicate with \(\mathcal{E}\) ) and the the roots of the Chebyshev polynomials of the first kind ( \(P_{n} = \cos (n \arccos \theta)\) ), which is \(w^{- \frac{1}{2} , -\frac{1}{2}}\). When using \(w^{- \frac{1}{2} , - \frac{1}{2}}\), it can be proved that for differentiable target functions the approximation error is guaranteed to converge to zero. I encourage you to research \(w^{0 , 0}\), which are the roots of the Legendre polynomials and \(w^{\frac{1}{2} , \frac{1}{2}}\) which are the roots of the Chebyshev polynomials of the second kind. These two node system need enrichment to work optimally. It’s quite remarkable how Jacobi weights can describe a family of polynomials that contains so many notable specimens. Node systems, tested First of all we need to evaluate the roots of the Chebyshev polynomials: playing around with the definition will show that our roots are given by \(x_{i}=cos(\frac{\pi (i+\frac{1}{2})}{n})\) as \(i\) spans over \(0, \dots, n-1\). This is implemented in chebyshevPolynomialRoots.m: function xNodes = chebyshevPolynomialRoots( degree, targetIntervalLowerBound, targetIntervalUpperBound ) xRaw = zeros( degree, 1 ); for i = 0 : degree - 1 xRaw( i + 1 ) = cos( pi * ( i + 0.5) / degree ); end xRaw = sort( xRaw ); xNodes = 0.5 * xRaw ... * ( targetIntervalUpperBound - targetIntervalLowerBound ) ... + mean( [ targetIntervalLowerBound targetIntervalUpperBound ] ); end Now we need a routine to evaluate our interpolating polynomial. Here it is, lagrangePoly.m: function y = lagrangePoly( nodes, components, x ) piCoeff = poly( nodes ); dPiCoeff = polyder( piCoeff ); y = zeros( 1, length( x ) ); for i = 1 : length( components ) y = y + ... components(i) * ... polyval( piCoeff, x ) ./ ... ( polyval( dPiCoeff, nodes( i ) ) .* ( x - nodes( i ) ) ); end end This code allows us to evaluate the Lebesgue functions for different combinations of number of nodes and nodes system. First of all we will analyze the behavior of the Lebesgue functions in a system with evenly spaced nodes: note how the magnitude explodes near the edges of the interpolation interval. This is tightly related to the Runge phenomenon. Think about the definition of the Lebesgue functions: why is their value \(1\) on the nodes? Plots of the Lebesgue function with the number of nodes going from 1 to 10, evenly spaced nodes system. This is how things change when we switch to the Chebyshev node system. The magnitude of the functions varies more evenly across the interval, yielding a better bound for the interpolation error. Plots of the Lebesgue function with the number of nodes going from 1 to 10, Chebyshev nodes system. Lastly, we take a look at the Runge phenomenon. When approximating \(\frac{1}{1+x^2}\) using algebraic interpolation on a system of 32 evenly spaced nodes we can see instabilities on the edges of the interval. This is related to the behavior of the Lebesgue functions that we saw in a previous figure. If we were to use the Chebyshev node system, the plot of the interpolated approximation and the one of the true function would be pretty much identical. Runge effect approximating the arctangent derivative using 32 evenly spaced nodes. What about splines? Splines can be more advantageous as they usually yield good results even when using very simple interpolating functions. Some of the most common splines that are used in practical applications are linear and cubic splines (when dealing with functions from \(\mathbb{R}\) to \(\mathbb{R}\) ) and Beziér splines (when dealing with curves in a space or in a plane). Usually one will find that the approximation error with splines is a function of the distance between the nodes \(h\). Consider this example: how can we bound the spline approximation error for a twice differentiable function over a system of evenly spaced nodes? Let \(x_{i}\) and \(x_{i+1}\) be two consecutive nodes, and let \(x\) be a point in between these two nodes. Let \(s(x)=a_{s}x+b_{s}\) be the restriction of the spline to the interval \([ x_{i}, x_{i+1} ]\). Let \(q\) be a constant, independent of \(x\). Define the function \(g(y)\) to be the function such that \begin{equation} F(x)=f(x)-s(x)-q(x-x_{i})(x-x_{i+1})=0 \end{equation} \(F(x)\) has three distinct roots in \([ x_{i}, x_{i+1} ]\), therefore Rolle’s theorem states that we have two roots for \(F&apos;(x)\). Again, use Rolle’s theorem to argue that \(F&apos;&apos;(x)\) has a root \(\zeta\) in \([ x_{i}, x_{i+1} ]\). \(s(x)\) is a piecewise linear function, therefore its second derivative is null. We may state that \begin{equation} \frac{d^{2}F}{dx^2}(\zeta)=\frac{d^{2}f}{dx^2}(\zeta) - 2q = 0 \end{equation} which means that \(q=\frac{1}{2}f&apos;&apos;(\zeta)\). Plug this in the definition of \(F(x)\) to state that \begin{equation} f(x)-s(x) = \frac{1}{2} \frac{d^{2}f}{dx^2} (\zeta)(x-x_{i})(x-x_{i+1}) \end{equation} and then assume the maximum over all possible values of \(x\) and all possible values of \(\zeta\) to obtain \(\|f(x)-s(x)\| \leq \frac{h^2}{8}M_{2}\), where \(M_{2} = \max _{[ x_{i}, x_{i+1} ]} \|f&apos;&apos;(x)\|\). You may think that this means that we should choose a number of nodes which is as high as possible. While this may work in theory, in practice there is a threshold where machine arithmetic errors take over and deteriorate our results. Conclusions This first article briefly covered many concepts in algebraic interpolation. This is the foundation to then move forward and understand what numerical intergration is about. As usual, I’d like give you a list of possible topics to read more, but keep in mind that the world of numerical interpolation is quite extensive. Furthermore, we grazed some topics from other fields of mathematics, such as orthogonal polynomial with respect to a weight. Some nice topics you may be interested in: what if we change interpolating functions? A possible choice is to use sines and cosines: as algebraic interpolation is a natural consequence of the existence of the Taylor series for a function, armonic interpolation is a natural consequence of the existence of Fourier series; efficency is key when we want to implement our numerical methods, so much so that you need to rethink even the basics such as evaluating polynomials. Check how Horner’s method works and get yourself acquainted with big-O’s and other performance asymptotics; weighted functional inner products are of fundamental importance in some fields of physics. Check how Laguerre polynomials (orthogonal polynomials with respect to the exponential function) are used in modelling hydrogen-like atoms. As always, feel free to reach out to me on Linkedin or GitHub if you want to suggest improvements or if you want to just have a chat about this. I hope that you enjoyed! Bibliography and further reading Approssimazione algebrica col metodo dei polinomi di Lagrange (in Italian). This is some work I did as an undergrad which served as a foundation for this article. It contains a lot of practical examples and in-depth considerations about the stuff we talked about; Rodriguez, Giuseppe, 2008. “Algoritmi Numerici” (in Italian); Fermo, Luisa, 2018. “Dispense per il corso di Teoria Numerica dell’ Approssimazione” (in Italian); Laguerre polynomials.</summary>
+      
+
+      
+      
+    </entry>
+  
+</feed>

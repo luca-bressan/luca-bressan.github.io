@@ -45,7 +45,7 @@
     <meta property="og:site_name" content="Luca Bressan - finance & statistics" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content="Some facts about barrier options" />
-    <meta property="og:description" content="Cover photo by T L. Arguably, a dam is a down-and-out type of barrier, although not the kind we’re interested in. What you should know before reading this post: Fundamentals of option pricing in the Black-Scholes model. Fundamentals of stochastic calculus. About barrier options and other related contracts Let’s be" />
+    <meta property="og:description" content="Cover photo by T L. Arguably, a dam is a down-and-out type of barrier, although not the kind we’re interested in. What you should know before reading this post Fundamentals of option pricing in the Black-Scholes model. Fundamentals of stochastic calculus. About barrier options and other related contracts Let’s be" />
     <meta property="og:url" content="https://luca-bressan.github.io/about-barrier-options" />
     <meta property="og:image" content="https://luca-bressan.github.io/assets/images/about-barrier-options/barrier.jpg" />
     <meta property="article:publisher" content="https://www.linkedin.com/in/lbressan" />
@@ -90,7 +90,7 @@
         "@type": "WebPage",
         "@id": "https://luca-bressan.github.io/about-barrier-options"
     },
-    "description": "Cover photo by T L. Arguably, a dam is a down-and-out type of barrier, although not the kind we’re interested in. What you should know before reading this post: Fundamentals of option pricing in the Black-Scholes model. Fundamentals of stochastic calculus. About barrier options and other related contracts Let’s be"
+    "description": "Cover photo by T L. Arguably, a dam is a down-and-out type of barrier, although not the kind we’re interested in. What you should know before reading this post Fundamentals of option pricing in the Black-Scholes model. Fundamentals of stochastic calculus. About barrier options and other related contracts Let’s be"
 }
     </script>
 
@@ -179,7 +179,7 @@ into the {body} of the default.hbs template -->
                 <div class="kg-card-markdown">
                     <p>Cover photo by <a href="https://unsplash.com/photos/plbeyaME7Jk?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditShareLink">T L</a>. Arguably, a dam is a down-and-out type of barrier, although not the kind we’re interested in.</p>
 
-<h3 id="what-you-should-know-before-reading-this-post">What you should know before reading this post:</h3>
+<h3 id="what-you-should-know-before-reading-this-post">What you should know before reading this post</h3>
 
 <ul>
   <li>Fundamentals of option pricing in the <em>Black-Scholes</em> model.</li>
@@ -187,11 +187,13 @@ into the {body} of the default.hbs template -->
 </ul>
 
 <h1 id="about-barrier-options-and-other-related-contracts">About barrier options and other related contracts</h1>
+
 <p>Let’s be honest: option pricing is not an easy feat to begin with, and the work of Black and Scholes is nothing short of magic. Today we are going to face the issue of options with path-dependent payoffs, in particular we are going to take a look at single, fixed barrier options and lookbacks. We will introduce some mathematical results that allow us to think more <em>financially</em> when dealing with the pricing problem, instead of getting bogged down in the maths of it. We will test some of our results with a Monte Carlo estimate, checking whether the closed form formula agrees with simulations. I suggest that you read this on a decently sized screen: MathJax is notoriously mobile-unfriendly. Rotating your device in landscape mode may help with long formulas and equations. Take a deep breath, it’s going to be kind of intense😂.</p>
 
 <p>Let’s begin!</p>
 
 <h3 id="a-closer-look-at-the-black-scholes-equation">A closer look at the <em>Black-Scholes</em> equation</h3>
+
 <p>It’s easy to lose sight of the target when dealing with an option pricing problem. That is, many forget that the option pricing problem <em>is <strong>not</strong> about find the general integral of the parabolic PDE that is the Black-Scholes equation</em>, but it <em>is about finding <strong>the unique solution to a boundary constraint problem</strong></em>. Why does this matter so much?
 Let’s introduce the <strong>Black-Scholes PDE operator</strong>: for each suitable function \(f\), let \(\mathfrak{d}_{\sigma,r}(f)\) be the operator that returns the function</p>
 
@@ -202,15 +204,16 @@ Let’s introduce the <strong>Black-Scholes PDE operator</strong>: for each suit
 <p>One might see that \(\mathfrak{d}_{\sigma,r}(f)\) is a linear operator. This is of fundamental importance to our goal: two different solutions to our <em>PDE</em> can be combined to get a new one. Should we be able to combine different solutions to the equation to satisfy the boundary condition, we would be successful in solving the option pricing problem. Let’s introduce the crucial tools that will allow us to exploit this property.</p>
 
 <blockquote>
-  <h6 id="proposition">Proposition.</h6>
-  <p>Let
+  <h6 id="proposition">Proposition</h6>
+</blockquote>
+
+<p>Let
 \begin{equation}
 \frac{dX}{X} = \mu dt + \sigma dW_{t}
 \end{equation}
 be the dynamic of a geometric brownian motion under a suitable probability measure. Then there exists a number \(\alpha\) such that \(X^{\alpha}\) is a martingale under the same probability measure.</p>
-</blockquote>
 
-<h6 id="proof-sketch">Proof sketch.</h6>
+<h6 id="proof-sketch">Proof sketch</h6>
 
 <p>The appropriate \(\alpha\) is \(\alpha = 1 - \frac{2 \mu}{\sigma^2}\). From here one should use Ito’s formula on \(X^{\alpha}\) and see that the resulting dynamic is one of a martingale.</p>
 
@@ -220,29 +223,33 @@ be the dynamic of a geometric brownian motion under a suitable probability measu
 
 <blockquote>
   <h6 id="definition-contract-function">Definition. <em>(Contract function)</em></h6>
-  <p>A <em>contract function</em> \(\Phi_{A_{T}}\) on some asset \(A_{t}\) is a generic function of at least asset price and time of expiration. For our intents and purposes, it will represent exactly the value of a given contract at expiration.</p>
 </blockquote>
+
+<p>A <em>contract function</em> \(\Phi_{A_{T}}\) on some asset \(A_{t}\) is a generic function of at least asset price and time of expiration. For our intents and purposes, it will represent exactly the value of a given contract at expiration.</p>
 
 <p>Our contract functions unfortunately won’t be just function of asset price and time of expiration. They will be functions of the asset path as well, that is they will be functions of \(A_{t}\) for some \(t&lt;T\). This is what we mean when we talk about path-dependency.</p>
 
 <blockquote>
   <h6 id="definition-pricing-function-price-function">Definition. <em>(Pricing function, price function)</em></h6>
-  <p>A <em>pricing function</em> \(\pi_{\Phi_{A_{T}}, t}\) on some contract \(\Phi_{A_{T}}\) is a function that gives the no-arbitrage price of said contract at any time before expiration.</p>
 </blockquote>
+
+<p>A <em>pricing function</em> \(\pi_{\Phi_{A_{T}}, t}\) on some contract \(\Phi_{A_{T}}\) is a function that gives the no-arbitrage price of said contract at any time before expiration.</p>
 
 <p>Sometimes I won’t be as pedantic when using notation. No need to be as long as we’re understating each other. Be flexible!</p>
 
 <blockquote>
   <h6 id="theorem-principle-of-reflection">Theorem. <em>(Principle of Reflection)</em></h6>
-  <p>Let \(\Phi_{S_{T}}\) be a contract function on some asset \(S_{t}\) that follows a GBM dynamic in a complete market free of arbitrages, and let \(\pi_{\Phi_{S_{T}}, t}\) be the associated pricing function that solves the <em>Black-Scholes PDE</em> \(\mathfrak{d}_{\sigma,r} ( \pi_{\Phi_{S_{T}}, t} ) = 0\).
+</blockquote>
+
+<p>Let \(\Phi_{S_{T}}\) be a contract function on some asset \(S_{t}\) that follows a GBM dynamic in a complete market free of arbitrages, and let \(\pi_{\Phi_{S_{T}}, t}\) be the associated pricing function that solves the <em>Black-Scholes PDE</em> \(\mathfrak{d}_{\sigma,r} ( \pi_{\Phi_{S_{T}}, t} ) = 0\).
 Let \(H&gt;0\) and let \(\alpha\) be the number such that \(S^{\alpha}\) is a martingale under the same probability measure. Consider the contract function \(\Psi_{S_{T}}=\left( \frac{S_{T}}{H} \right) ^{\alpha} \Phi_{\frac{H^2}{S_{T}}, t}\)
-Then, the associated pricing function to the new claim that solves the <em>Black-Scholes PDE</em> is 
+Then, the associated pricing function to the new claim that solves the <em>Black-Scholes PDE</em> is
 \begin{equation}
 \xi_{S_{t},t} = \left( \frac{S_{t}}{H} \right) ^{\alpha} \pi_{\Phi_{S_{T}}, t} \left( \frac{H^2}{S_{T}}, t \right) .
 \end{equation}</p>
-</blockquote>
 
-<h6 id="proof">Proof.</h6>
+<h6 id="proof">Proof</h6>
+
 <p>The appropriate price (that is, the pricing function that solves the Black-Scholes PDE) for \(\Psi_{S_{T}}\) given by</p>
 
 <p>\begin{equation}
@@ -258,6 +265,7 @@ Then, use the abstract Bayes theorem to state that there exists a new probabilit
 \end{equation}</p>
 
 <p>Furthermore, the following can be stated:</p>
+
 <ul>
   <li>\(dW^{\mathbb{B}}=dW^{\mathbb{Q}}-\alpha \sigma dt\).</li>
   <li>\(U\) has \(\mathbb{B}\)-dynamic \(\frac{dU}{U} = \mu dt - \sigma dW^{\mathbb{B}}\)</li>
@@ -272,6 +280,7 @@ Then, use the abstract Bayes theorem to state that there exists a new probabilit
 <p>Let’s move on: why did we bother with the reflection theorem in the first place? The assets \(S_{t}\) and \(U_{t}\) have a peculiar property: they are always on opposite sides of the number \(H\), and they match when \(S_{t}=H\). By this point you may have already correctly guessed that \(H\) is our barrier. But this is where the real magic happens: consider a vanilla call option struck at \(K\). The reflection principle allows us to synthesize a new contract <em>(from now on called reflected)</em> that has the exact same price of the original one when \(S_{t}=H\), independently of time. This is the key point of what we’re about to do.</p>
 
 <h3 id="pricing-a-down-and-out-regular-call-option">Pricing a down-and-out regular call option</h3>
+
 <p>Consider a down-and-out call option struck at \(K\) where the barrier \(H\) is out-of-the-money <em>(this last condition is what distinguishes regular barrier options from reverse barrier options)</em>. The pricing problem is a boundary constrained problem, built on the <em>Black-Scholes PDE</em>. The constraints are:</p>
 
 <ul>
@@ -368,7 +377,7 @@ Consider an hypotethical asset-market combination with the following properties:
           optionExactPrice=blsprice(s_0,K,mu,1,sigma) - ((s_0/H)^alpha).*blsprice(H^2/s_0,K,mu,1,sigma);
 </code></pre></div></div>
 
-<p>The code is very much self explainatory, and for details about stochastic processes simulation one should refer to the official documentation by MathWorks. One might wonder why the number of data points is such that we are considering observations taken every quarter of an hour over a day (or taken every five minutes over an 8-hours working day). If we were to consider observations taken at the end of each trading day, we would be giving an overly optimistic and biased estimate of the option price as <a href="#bibliography-and-further-reading">we would be discarding effects due to intraday volatility</a>. To make a long story short, our asset may breach the barrier in between observation points, and we wouldn’t be able to notice that. 
+<p>The code is very much self explainatory, and for details about stochastic processes simulation one should refer to the official documentation by MathWorks. One might wonder why the number of data points is such that we are considering observations taken every quarter of an hour over a day (or taken every five minutes over an 8-hours working day). If we were to consider observations taken at the end of each trading day, we would be giving an overly optimistic and biased estimate of the option price as <a href="#bibliography-and-further-reading">we would be discarding effects due to intraday volatility</a>. To make a long story short, our asset may breach the barrier in between observation points, and we wouldn’t be able to notice that.
 Our estimated price is \(V=4.39(8)\$\). Assuming an approximately normal distribution for the estimator <em>(can you spot any issues with this?)</em> we get a standard error of \(0.06(8) \$\) and our theoretical price of \(4.34(5) \$\) is within the 95% confidence interval of our estimation. We can conclude that our Monte-Carlo estimate and our closed-form analytical formula agree on the result to a sufficient degree that we can confidently assign a price to the option.</p>
 
 <figure style="display: inline-block; text-align: center; align-content:center; position: relative; float: left; overflow: hidden; margin: 0 20px 20px 0; max-width: 920px;">
@@ -393,6 +402,7 @@ Our estimated price is \(V=4.39(8)\$\). Assuming an approximately normal distrib
 \end{equation}</p>
 
 <p>We will obtain a pricing formula decomposing this contract in a portfolio of options that are either not path-dependent or whose path-dependency we can manage. Let \(t\) be some time before expiration. Let \(\tau(t)\) be the time where our asset reached it lowest price, that is let \(\tau(t) = \arg \min _{t} S_{t}\). Intuitively, our portfolio must start with a plain vanilla call option, struck at \(S_{\tau(t)}\), given that surely we’ll have the right to buy the asset at such price. Then, our portfolio must take into account the possibility that the asset will fall even lower than \(S_{\tau(t)}\). We will add something to our portfolio that satisfies the following requirements:</p>
+
 <ul>
   <li>we must be able to price it using reflections;</li>
   <li>no benefit must be provided at expiration if \(S_{\tau(t)} = S_{\tau(T)}\);</li>
@@ -400,6 +410,7 @@ Our estimated price is \(V=4.39(8)\$\). Assuming an approximately normal distrib
 </ul>
 
 <p>We claim that this result can be achieved by adding infinitely many contracts, each one of them being bought in infinitesimal quantity. Consider for any \(\gamma\) lesser than \(S_{\tau(t)}\), a position obtained by going short \(d\gamma\) units of a down-and-in digital call struck at \(S_{\tau(t)}\) with barrier at \(\gamma\) and going long by the same amount on a down and in digital call struck at \(\gamma\) with barrier at \(\gamma\). Let’s check our claim:</p>
+
 <ul>
   <li>we can price digital DICs using reflections;</li>
   <li>since any \(\gamma\) is lesser than \(S_{\tau(t)}\), if \(S_{\tau(t)} = S_{\tau(T)}\) none of our contracts are active, and the payoff is null.</li>
@@ -421,7 +432,9 @@ S_{t}e^{-r(T-t)}N(d_{1})-S_{\tau(t)}e^{-r(T-t)}N(d_{2})+S_{t}e^{-r(T-t)} \sigma 
 <p>where \(N(x)\) is the standard gaussian cdf. and \(d_{1}\) and \(d_{2}\) are the usual <em>Black-Scholes quantiles</em> evaluated for \(K=S_{\tau(t)}\) and \(S=S_{t}\). This expression is somewhat more complex if we allow for the presence of dividends, but the reasoning remains the same. Again feel free to try, I’m sure you’ll manage as it’s mostly a matter of making the right choices while integrating by parts.</p>
 
 <h3 id="conclusions">Conclusions</h3>
+
 <p>We have seen how the reflection principle allows us to get rid of path-dependency and lets us find pricing formula that would be otherwise much more tedious to evaluate. This is not the only way possible: you may want to look into the theory of absorbed processes. This is the way that these formula were first found (see <a href="#bibliography-and-further-reading">Muisela</a> and <a href="#bibliography-and-further-reading">Björk</a>), and it is a perfecty valid one, although much more mathematically intense. The beauty of the reflection principle lies in the possibilty of being able to reason in <em>financial terms</em>, and the math just gets out of the way. This article is a good starting point, but much more can be said about path-dependent contract functions. Some possible next steps from here:</p>
+
 <ul>
   <li>looking into more contracts, such as ladders and double barriers;</li>
   <li>looking at how things change when we have stochastic dividends and rates;</li>
@@ -441,6 +454,7 @@ S_{t}e^{-r(T-t)}N(d_{1})-S_{\tau(t)}e^{-r(T-t)}N(d_{2})+S_{t}e^{-r(T-t)} \sigma 
 </ul>
 
 <h3 id="updates">Updates</h3>
+
 <ul>
   <li>12/10/2022 - Rolled back to MathJax version 2.7 to improve mobile-friendliness: TeX sections have been modified accordingly. Fixed some typos.</li>
 </ul>
@@ -511,6 +525,69 @@ S_{t}e^{-r(T-t)}N(d_{1})-S_{\tau(t)}e^{-r(T-t)}N(d_{2})+S_{t}e^{-r(T-t)} \sigma 
             
 
             <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/he-s-giving-the-numbers">
+                <div class="post-card-image" style="background-image: url(/assets/images/he-s-giving-the-numbers/lotto.jpg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/he-s-giving-the-numbers">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Computational-finance</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">"He's giving away the numbers!": facts about numerical integration (Numerical interpolation, part 1)</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Cover photo by Waldemar Brandt on Unsplash. In Italy, when someone is speaking nonsense or is saying something outrageously wrong, we say that he’s “giving away the numbers”. Hopefully we’ll be able to</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/images/luca.jpg" alt="Luca Bressan" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/luca/">Luca Bressan</a>
+                        </span>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      13 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
             
 
             <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->

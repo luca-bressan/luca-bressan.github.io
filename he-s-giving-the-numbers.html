@@ -1,0 +1,754 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+    <!-- Document Settings -->
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+    <!-- Base Meta -->
+    <!-- dynamically fixing the title for tag/author pages -->
+
+
+
+    <title>"He's giving away the numbers!": facts about numerical integration (Numerical interpolation, part 1)</title>
+    <meta name="HandheldFriendly" content="True" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Styles'n'Scripts -->
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/screen.edited.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/built/syntax.css" />
+    <!-- highlight.js -->
+    <link rel="stylesheet" href="https://highlightjs.org/static/demo/styles/base16/rebecca.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.6.0/languages/matlab.min.js"></script>
+    <script>hljs.highlightAll();</script>
+
+    <!--[if IE]>
+        <style>
+            p, ol, ul{
+                width: 100%;
+            }
+            blockquote{
+                width: 100%;
+            }
+        </style>
+    <![endif]-->
+    
+    <!-- This tag outputs SEO meta+structured data and other important settings -->
+    <meta name="description" content="My finance & statistics blog" />
+    <link rel="shortcut icon" href="https://luca-bressan.github.io/assets/images/favicon.png" type="image/png" />
+    <link rel="canonical" href="https://luca-bressan.github.io/he-s-giving-the-numbers" />
+    <meta name="referrer" content="no-referrer-when-downgrade" />
+
+     <!--title below is coming from _includes/dynamic_title-->
+    <meta property="og:site_name" content="Luca Bressan - finance & statistics" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content=""He's giving away the numbers!": facts about numerical integration (Numerical interpolation, part 1)" />
+    <meta property="og:description" content="Cover photo by Waldemar Brandt on Unsplash. In Italy, when someone is speaking nonsense or is saying something outrageously wrong, we say that he’s “giving away the numbers”. Hopefully we’ll be able to retain our mental fitness and say a lot of very correct stuff, while still giving away some" />
+    <meta property="og:url" content="https://luca-bressan.github.io/he-s-giving-the-numbers" />
+    <meta property="og:image" content="https://luca-bressan.github.io/assets/images/he-s-giving-the-numbers/lotto.jpg" />
+    <meta property="article:publisher" content="https://www.linkedin.com/in/lbressan" />
+    <meta property="article:author" content="https://www.linkedin.com/inlbressan" />
+    <meta property="article:published_time" content="2022-12-03T02:00:00+01:00" />
+    <meta property="article:modified_time" content="2022-12-03T02:00:00+01:00" />
+    <meta property="article:tag" content="Computational-finance" />
+    
+    <meta property="og:image:width" content="1400" />
+    <meta property="og:image:height" content="933" />
+
+    <!-- for mathjax support -->
+    
+      <script type="text/x-mathjax-config">
+        MathJax.Hub.Config({
+          CommonHTML: { linebreaks: { automatic: true } },
+          "HTML-CSS": { linebreaks: { automatic: true } },
+                 SVG: { linebreaks: { automatic: true } }
+        });
+        </script>
+      <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+      <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>
+    
+
+    <script type="application/ld+json">
+{
+    "@context": "https://schema.org",
+    "@type": "Website",
+    "publisher": {
+        "@type": "Organization",
+        "name": "Luca Bressan - finance & statistics",
+        "logo": "https://luca-bressan.github.io/assets/images/blog-icon.png"
+    },
+    "url": "https://luca-bressan.github.io/he-s-giving-the-numbers",
+    "image": {
+        "@type": "ImageObject",
+        "url": "https://luca-bressan.github.io/assets/images/he-s-giving-the-numbers/lotto.jpg",
+        "width": 2000,
+        "height": 666
+    },
+    "mainEntityOfPage": {
+        "@type": "WebPage",
+        "@id": "https://luca-bressan.github.io/he-s-giving-the-numbers"
+    },
+    "description": "Cover photo by Waldemar Brandt on Unsplash. In Italy, when someone is speaking nonsense or is saying something outrageously wrong, we say that he’s “giving away the numbers”. Hopefully we’ll be able to retain our mental fitness and say a lot of very correct stuff, while still giving away some"
+}
+    </script>
+
+    <!-- <script type="text/javascript" src="https://demo.ghost.io/public/ghost-sdk.min.js?v=724281a32e"></script>
+    <script type="text/javascript">
+    ghost.init({
+    	clientId: "ghost-frontend",
+    	clientSecret: "f84a07a72b17"
+    });
+    </script> -->
+
+    <meta name="generator" content="Jekyll 3.6.2" />
+    <link rel="alternate" type="application/rss+xml" title=""He's giving away the numbers!": facts about numerical integration (Numerical interpolation, part 1)" href="/feed.xml" />
+
+
+</head>
+<body class="post-template">
+
+    <div class="site-wrapper">
+        <!-- All the main content gets inserted here, index.hbs, post.hbs, etc -->
+        <!-- default -->
+
+<!-- The tag above means: insert everything in this file
+into the {body} of the default.hbs template -->
+
+<header class="site-header outer">
+    <div class="inner">
+        <nav class="site-nav">
+    <div class="site-nav-left">
+        
+            
+                <a class="site-nav-logo" href="https://luca-bressan.github.io/"><img src="/assets/images/blog-icon.png" alt="Luca Bressan - finance & statistics" /></a>
+            
+        
+        
+            <ul class="nav" role="menu">
+    <li class="nav-home" role="menuitem"><a href="/">Home</a></li>
+    <li class="nav-about" role="menuitem"><a href="/about/">About</a></li>
+    <!--<li class="nav-getting-started" role="menuitem"><a href="/tag/getting-started/">Getting Started</a></li>-->
+    <!--<li class="nav-try-ghost" role="menuitem"><a href="https://ghost.org">Try Ghost</a></li>-->
+</ul>
+
+        
+    </div>
+    <div class="site-nav-right">
+        <div class="social-links">
+            
+            
+        </div>
+        
+    </div>
+</nav>
+
+    </div>
+</header>
+
+<!-- Everything inside the #post tags pulls data from the post -->
+<!-- #post -->
+
+<main id="site-main" class="site-main outer" role="main">
+    <div class="inner">
+
+        <article class="post-full  tag-computational-finance post ">
+
+            <header class="post-full-header">
+                <section class="post-full-meta">
+                    <time class="post-full-meta-date" datetime=" 3 December 2022"> 3 December 2022</time>
+                    
+                        <span class="date-divider">/</span>
+                        
+                            
+                               <a href='/tag/computational-finance/'>COMPUTATIONAL-FINANCE</a>
+                            
+                        
+                    
+                </section>
+                <h1 class="post-full-title">"He's giving away the numbers!": facts about numerical integration (Numerical interpolation, part 1)</h1>
+            </header>
+
+            
+            <figure class="post-full-image" style="background-image: url(/assets/images/he-s-giving-the-numbers/lotto.jpg)">
+            </figure>
+            
+
+            <section class="post-full-content">
+                <div class="kg-card-markdown">
+                    <p>Cover photo by <a href="https://unsplash.com/@waldemarbrandt67w?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Waldemar Brandt</a> on <a href="https://unsplash.com/s/photos/lottery-extraction?utm_source=unsplash&amp;utm_medium=referral&amp;utm_content=creditCopyText">Unsplash</a>. In Italy, when someone is speaking nonsense or is saying something outrageously wrong, we say that he’s <em>“giving away the numbers”</em>. Hopefully we’ll be able to retain our mental fitness and say a lot of very correct stuff, while still giving away some numbers in a literal sense.</p>
+
+<h3 id="what-you-should-know-before-reading-this-post">What you should know before reading this post</h3>
+
+<ul>
+  <li>Basic linear algebra</li>
+  <li>Basic calculus</li>
+</ul>
+
+<h1 id="the-quest-for-numerical-integration">The quest for numerical integration</h1>
+
+<p>There comes a point where our nice theoretical results, with closed formulas and all that jazz, are no longer sufficient to make a decision, give an estimate or complete our task. Sometimes we just need a number, a nicely written one using only digits, commas and some scientific notation for the adventurous. A particular class of problems that arises in obtaining our dear number is the one of <em>numerical integration</em>. Riemann and Lebesgue integrals are <strong>not</strong> particularly wieldy objects to begin with <em>(that’s the reason why they’re plenty of fun, no?)</em> and Ito integrals <strong>are even worse</strong>. In fact, for Ito intergrals, it’s quite hard to even state what a solution written with just digits is. Do we want a <em>path-wise solution</em> or do we just need <em>some statistical properties to hold?</em> We will try to get a grasp of all this tough stuff. But every nice journey begins with, well… the beginning. <strong>This is part of a series of 3 articles:</strong></p>
+
+<ul>
+  <li>🙋‍♂️ <em>Numerical (algebraic) interpolation</em>, the basis for numerical integration;</li>
+  <li>Numerical approximation of Riemann integrals;</li>
+  <li>Numerical approximation of Ito integrals, specifically targeting the issue of <em>finding a weakly converging approximation scheme</em> for processes built on the browninan motion (spoiler: this is what we need to price our beloved financial products).</li>
+</ul>
+
+<p>This time we are going to face the task of algebraic interpolation. While this article is going to be pretty far from being exhaustive <em>(to be honest, there are 300 pages long books about interpolation which are pretty far from being exhaustive)</em>, it will serve as a starting point for our journey and I hope it will stimulate your curiosity. Well, enough preambles: <em>1, 2, 3, take a deep breath and… let’s get going!</em></p>
+
+<h3 id="what-even-is-interpolation">What even is interpolation?</h3>
+
+<p>The problem of interpolation arises when we want to find a function \(f(x)\) such that given a point cloud \((x_{i},y_{i})_{i = 1, 2, 3, \dots}\) we have \(f(x_{i})=y_{i}\). In particular, <em>algebraic interpolation is the issue of finding \(f\) among the family of polynomials or piecewise polynomial functions</em>. When the function is only piecewise polynomial, we are talking about <em>spline interpolation</em>. A case of particular interest is when there exists a known function \(\varphi(x)\) such that \(y = \varphi(x)\), where \(\varphi(x)\) has some unpleasant properties that make it difficult to evaluate. Another scenario where interpolation is useful is when \(\varphi(x)\) has some known properties but doesn’t allow for an explicit closed form. In this case we may still want to use a polynomial to approximate \(\varphi\), since <em>polynomials are easy to handle and evaluate</em>. <strong>There will be errors in doing this:</strong> we are going to measure them using the \(\infty\)-norm.</p>
+
+<blockquote>
+  <h6 id="definition-approximation-error">Definition. <em>(Approximation error)</em></h6>
+</blockquote>
+
+<p>Given an interval \(I \subset \mathbb{R}\) and a function \(\varphi: I \to \mathbb{R}\) we define the <em>approximation error</em> obtained approximating \(\varphi\) over \(I\) using a polynomial \(f\), \(E(f;\varphi)_{I}\) as</p>
+
+<p>\begin{equation}
+              E_{I}(f; \varphi) = \| f - \varphi \| _{ \infty } \restriction _{I}
+\end{equation}</p>
+
+<p style="text-align: right">∎</p>
+
+<p>This is our first glimpse of the essential nature of numerical analysis: knowing that you are wrong and by how much is even more important than the number you get at the end. Just as a note, sometimes you may mitigate this limitation of numerical analysis using tools like <em>symbolic machine algebra</em>.
+In theory, we can be quite successful at approximating functions by polynomials, we just need our functions to be continuous:</p>
+
+<blockquote>
+  <h6 id="theorem-weierstrass-theorem-on-approximation-errors">Theorem. <em>(Weierstrass Theorem on approximation errors)</em></h6>
+</blockquote>
+
+<p>Let \(\varphi\) be a continuous function on some interval \(I\). Then for any \(\varepsilon &gt; 0\) there exists \(n \in \mathbb{N}\) and a polynomial \(P_n\) of degree \(n\) such that \(E_{I}(P_n; \varphi) &lt; \varepsilon\)</p>
+
+<p style="text-align: right">∎</p>
+
+<p><em>J-L. Lagrange in 1795</em> had the brilliant idea to define a vector space of polynomials with degree equal to the number of points in the cloud minus one. Lagrange polynomials have the nice property of <strong>having unit value</strong> on the various \(x_{i}\), and <strong>they constitute a basis</strong> for the linear space of polynomials, so that the interpolating polynomial is just a vector whose components are the \(y_{i}\). They look as follows:</p>
+
+<blockquote>
+  <h6 id="definition-lagrange-polynomials">Definition. <em>(Lagrange polynomials)</em></h6>
+</blockquote>
+
+<p>Given a point cloud \((x_{i},y_{i})_{i = 1, 2, 3, \dots, n}\) we define the <em>Lagrange basis</em> of the \(n\)-degree polynomials space as</p>
+
+<p>\begin{equation}
+              l_{k}=\frac{\pi_{n}(x)}{\pi_{n}’(x) (x-x_{k})}
+\end{equation}</p>
+
+<p>where \(\pi_{n}=(x-x_{1})(x-x_{2}) \dots (x-x_{n})\).</p>
+
+<p style="text-align: right">∎</p>
+
+<p>Evaluating the Lagrange interpolating polynomial \(L_{n}=y_{1}l_{1} + \dots + y_{n}l_{n}\) has computational complexity \(\mathcal{O}(n^{2})\), which is quite nice. Anything polynomial is actually nice, NP-hard problems are a massive issue.</p>
+
+<h3 id="where-should-i-put-my-x_i">Where should I put my \(x_{i}\)?</h3>
+
+<p>Choosing where to evaluate the “hard” function before approximation <em>plays a massive role</em> in how good our interpolation will be. In fact we have this theorem:</p>
+
+<blockquote>
+  <h6 id="theorem-first-fabers-theorem">Theorem. <em>(First Faber’s theorem)</em></h6>
+</blockquote>
+
+<p>For any <strong>a priori</strong> known algorithm for determining the \(x_{i}\) <em>independently of the target function</em> \(\varphi\), there exist both a target function such that the approximation error <em>does not converge</em> to \(0\) as the number of \(x_{i}\) increases and one such that the approximation <em>does indeed converge</em> to \(0\) as \(n\) goes to infinity.</p>
+
+<p style="text-align: right">∎</p>
+
+<p>So, no matter how smart we are in pre-determining the \(x_{i}\) (from here on called nodes), <em>sometimes we get things terribly wrong</em>. But we can still be pretty smart. The following theorem tells us that we can <em>bound the error by means of a recursive relation</em>:</p>
+
+<blockquote>
+  <h6 id="theorem-lebesgue-constants-theorem">Theorem. <em>(Lebesgue constants theorem)</em></h6>
+</blockquote>
+
+<p>Let \(\varphi\) be a continuous target function on some interval \(I\). Then the following relation holds</p>
+
+<p>\begin{equation}
+              E_{I}(L_{n}; \varphi) \leq (1+\Lambda_{n}((x_{i})_{i = 1, \dots, n})) \mathcal{E}_{n-1}(\varphi)
+\end{equation}</p>
+
+<p>where \(\Lambda_{n} = \| \lambda_{n} \| _{\infty} \restriction_{I}\) are called Lebesgue’s constants, the \(n\)-th Lebesgue function \(\lambda_{n}\) is the sum of the absolute values of the Lagrange basis polynomials and \(\mathcal{E}(\varphi)\) is the best possible polynomial approximation of \(\varphi\) using polynomials of degree \(n\).</p>
+
+<p style="text-align: right">∎</p>
+
+<p>Given the recursive nature of this error bound, we would like to find an algorithm for selecting the nodes that allows us to have the Lebesgue constants grow as slowly as possible as we increase the number of nodes. There is, however, a <em>limit to how slowly we can have them grow</em>.</p>
+
+<blockquote>
+  <h6 id="theorem-second-fabers-theorem">Theorem. <em>(Second Faber’s theorem)</em></h6>
+</blockquote>
+
+<p>For any choice of node system, we have \(\Lambda_{n}((x_{i})_{i = 1, \dots, n}) \geq \frac{1}{12} \log (n)\)</p>
+
+<p style="text-align: right">∎</p>
+
+<p>Therefore, we have that <em>if Lebesgue constants grow logarithmically, the node system has optimal scaling</em>. Unsurprisingly, the smoothness of the target function also plays an important role.</p>
+
+<blockquote>
+  <h6 id="theorem">Theorem</h6>
+</blockquote>
+
+<p>Let \(\varphi\) be a \(k\)-times differentiable target function on some interval \(I\). Then the following relation holds</p>
+
+<p>\begin{equation}
+              E_{I}(L_{n}; \varphi) \leq c \frac{\log n}{n^k}
+\end{equation}</p>
+
+<p>where \(c\) is independent of \(k\) and \(n\)</p>
+
+<p style="text-align: right">∎</p>
+
+<p>This is it for the general facts. Let’s have a small recap befor moving on:</p>
+
+<ul>
+  <li>interpolating basically means joining points in a nice way. <em>And polynomials are <strong>really</strong> nice</em>;</li>
+  <li>Weierstrass’ theorem makes it looks like algebraic interpolation can in theory be <strong>infinitely effective</strong>;</li>
+  <li>Lagrange gave us a way of choosing the coefficients for our interpolating polynomial <em>that just works</em>;</li>
+  <li><strong>we can estimate errors</strong>;</li>
+  <li>Faber’s theorems shattered our dreams of a <em>universally good way of picking the interpolation nodes</em>.</li>
+</ul>
+
+<p>Our main focus is the choice of the node system, let’s see some of those and let’s try to say something about their performance.</p>
+
+<h3 id="some-notable-node-systems">Some notable node systems</h3>
+
+<p>The first thing we would like to do is to use evenly spaced nodes across our interval. This seemingly reasonable choice is, unfortunately, <strong>an awful one</strong>.</p>
+
+<blockquote>
+  <h6 id="theorem-tureckij-theorem">Theorem. <em>(Tureckij theorem)</em></h6>
+</blockquote>
+
+<p>For an evenly spaced system of nodes the Lebesgue constants have the following scaling:</p>
+
+<p>\begin{equation}
+              \Lambda _ {n} ((x_{i})_{i = 1, \dots, n})) \sim \frac{2^{n}}{e n \log n}
+\end{equation}</p>
+
+<p style="text-align: right">∎</p>
+
+<p>This is related to an unpleasant phenomenon that we are going to see later, called the <em>Runge effect</em>. This leads many practitioners to <em>limit the usage of evenly spaced nodes only with polynomials of degree at most equal to <strong>nine</strong></em>.
+We have smarter choices available, but first we need some extra notions.</p>
+
+<blockquote>
+  <h6 id="definition-orthogonal-polynomials">Definition. <em>(Orthogonal polynomials)</em></h6>
+</blockquote>
+
+<p>Two degree \(n\) polynomials \(p\) and \(q\) defined on the interval \([-1,1]\) are said to be <em>orthogonal</em> with respect to the \(\alpha , \beta\)-Jacobi weighted <em>inner product</em> if they satisfy the following condition</p>
+
+<p>\begin{equation}
+              \int_{-1}^{1} p(x) q(x) (1-x)^{\alpha}(1+x)^{\beta} dx = 0
+\end{equation}</p>
+
+<p style="text-align: right">∎</p>
+
+<p>Note that <em>we can always traslate our approximation problem from a generic bounded interval into</em> \([-1,1]\) <em>by means of an affine transform</em>. The roots of the orthogonal polynomial defined as before have several nice properties. We will refer to the node system given by these roots as \(w^{\alpha , \beta}\).</p>
+
+<blockquote>
+  <h6 id="theorem-szegő-theorem">Theorem. <em>(Szegő theorem)</em></h6>
+</blockquote>
+
+<p>If \(\alpha\) and \(\beta\) belong in \((-1,\frac{1}{2}]\), then the <em>scaling of the Lebesgue constants</em> of \(w^{\alpha , \beta}\) <strong>is logarithmic</strong>, and it is polynomial otherwise.</p>
+
+<p style="text-align: right">∎</p>
+
+<p>Szegő theorem therefore states <em>how to reach that optimal logarithmic scaling of the error bound we were looking for</em>. Sometimes, a process called <em>enrichment</em> is needed even when we are within the conditions stated by the theorem. We won’t talk about this process, but it basically is a way of <em>adding nodes to improve performance</em>. We will perform practical tests on two system of nodes of particular importance: the evenly spaced nodes <em>(that we will indicate with</em> \(\mathcal{E}\) <em>)</em> and the the roots of the Chebyshev polynomials of the first kind <em>(</em> \(P_{n} = \cos (n \arccos \theta)\) <em>)</em>, which is \(w^{- \frac{1}{2} , -\frac{1}{2}}\). When using \(w^{- \frac{1}{2} , - \frac{1}{2}}\), <em>it can be proved that for differentiable target functions the approximation error is guaranteed to <strong>converge to zero</strong></em>. I encourage you to research \(w^{0 , 0}\), which are the roots of the <em>Legendre polynomials</em> and \(w^{\frac{1}{2} , \frac{1}{2}}\) which are the roots of the <em>Chebyshev polynomials of the second kind</em>. These two node system <em>need enrichment to work optimally</em>. It’s quite remarkable how Jacobi weights can describe a family of polynomials that contains so many notable specimens.</p>
+
+<h3 id="node-systems-tested">Node systems, tested</h3>
+
+<p>First of all we need to evaluate the roots of the Chebyshev polynomials: playing around with the definition will show that our roots are given by \(x_{i}=cos(\frac{\pi (i+\frac{1}{2})}{n})\) as \(i\) spans over \(0, \dots, n-1\). This is implemented in <code class="language-plaintext highlighter-rouge">chebyshevPolynomialRoots.m</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>          function xNodes = chebyshevPolynomialRoots( degree, targetIntervalLowerBound, targetIntervalUpperBound )
+            xRaw = zeros( degree, 1 );    
+            for i = 0 : degree - 1 
+                    xRaw( i + 1 ) = cos( pi * ( i + 0.5) / degree );
+            end
+            xRaw = sort( xRaw );
+            xNodes = 0.5 * xRaw ...
+                        * ( targetIntervalUpperBound - targetIntervalLowerBound ) ...
+                        + mean( [ targetIntervalLowerBound targetIntervalUpperBound ] );
+          end
+</code></pre></div></div>
+
+<p>Now we need a routine to evaluate our interpolating polynomial. Here it is, <code class="language-plaintext highlighter-rouge">lagrangePoly.m</code>:</p>
+
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code>          function y = lagrangePoly( nodes, components, x )
+              piCoeff = poly( nodes );
+              dPiCoeff = polyder( piCoeff );
+              y = zeros( 1, length( x ) );
+              for i = 1 : length( components )
+                    y = y + ...
+                        components(i) * ...
+                        polyval( piCoeff, x ) ./ ...
+                        ( polyval( dPiCoeff, nodes( i ) ) .* ( x - nodes( i ) ) );
+              end
+          end
+</code></pre></div></div>
+
+<p>This code allows us to evaluate the Lebesgue functions for different combinations of number of nodes and nodes system. First of all we will analyze the behavior of the Lebesgue functions in a system with evenly spaced nodes: note how <strong>the magnitude explodes near the edges of the interpolation interval</strong>. This is tightly related to the Runge phenomenon. Think about the definition of the Lebesgue functions: <em>why is their value</em> \(1\) <em>on the nodes?</em></p>
+
+<figure style="display: inline-block; text-align: center; align-content:center; position: relative; float: left; overflow: hidden; margin: 0 20px 20px 0; max-width: 920px;">
+  <img src="/assets/images/he-s-giving-the-numbers/lambda_e.gif" alt="Lebesgue functions" style="max-width: 100%; height: auto;" />
+  <figcaption style="position: absolute; text-align: center; align-content:center; background: rgba(0,0,0,0.75); color: white; padding: 10px 20px; opacity: 1; bottom: 0; font-size: 12px; line-height: 18px;">Plots of the Lebesgue function with the number of nodes going from 1 to 10, evenly spaced nodes system. </figcaption>
+</figure>
+
+<p>This is how things change when we switch to the Chebyshev node system. The magnitude of the functions varies more evenly across the interval, yielding a better bound for the interpolation error.</p>
+<figure style="display: inline-block; text-align: center; align-content:center; position: relative; float: left; overflow: hidden; margin: 0 20px 20px 0; max-width: 920px;">
+  <img src="/assets/images/he-s-giving-the-numbers/lambda_cheby.gif" alt="Lebesgue functions" style="max-width: 100%; height: auto;" />
+  <figcaption style="position: absolute; text-align: center; align-content:center; background: rgba(0,0,0,0.75); color: white; padding: 10px 20px; opacity: 1; bottom: 0; font-size: 12px; line-height: 18px;">Plots of the Lebesgue function with the number of nodes going from 1 to 10, Chebyshev nodes system. </figcaption>
+</figure>
+
+<p>Lastly, we take a look at the Runge phenomenon. When approximating \(\frac{1}{1+x^2}\) using algebraic interpolation on a system of 32 evenly spaced nodes we can see instabilities on the edges of the interval. This is related to the behavior of the Lebesgue functions that we saw in a previous figure. If we were to use the Chebyshev node system, the plot of the interpolated approximation and the one of the true function would be pretty much identical.</p>
+<figure style="display: inline-block; text-align: center; align-content:center; position: relative; float: left; overflow: hidden; margin: 0 20px 20px 0; max-width: 920px;">
+  <img src="/assets/images/he-s-giving-the-numbers/runge.jpg" alt="Runge effect" style="max-width: 100%; height: auto;" />
+  <figcaption style="position: absolute; text-align: center; align-content:center; background: rgba(0,0,0,0.75); color: white; padding: 10px 20px; opacity: 1; bottom: 0; font-size: 12px; line-height: 18px;">Runge effect approximating the arctangent derivative using 32 evenly spaced nodes. </figcaption>
+</figure>
+
+<h3 id="what-about-splines">What about splines?</h3>
+
+<p>Splines can be more advantageous as <em>they usually yield good results even when using very simple interpolating functions</em>. Some of the most common splines that are used in practical applications are <strong>linear</strong> and <strong>cubic</strong> splines <em>(when dealing with functions from</em> \(\mathbb{R}\) <em>to</em> \(\mathbb{R}\) <em>)</em> and <strong>Beziér</strong> splines <em>(when dealing with curves in a space or in a plane)</em>. Usually one will find that <em>the approximation error with splines is a function of the distance between the nodes</em> \(h\). Consider this example: <em>how can we bound the spline approximation error for a twice differentiable function over a system of evenly spaced nodes?</em>
+Let \(x_{i}\) and \(x_{i+1}\) be two consecutive nodes, and let \(x\) be a point in between these two nodes. Let \(s(x)=a_{s}x+b_{s}\) be the restriction of the spline to the interval \([ x_{i}, x_{i+1} ]\).
+Let \(q\) be a constant, independent of \(x\).
+Define the function \(g(y)\) to be the function such that</p>
+
+<p>\begin{equation}
+  F(x)=f(x)-s(x)-q(x-x_{i})(x-x_{i+1})=0
+\end{equation}</p>
+
+<p>\(F(x)\) has three distinct roots in \([ x_{i}, x_{i+1} ]\), therefore <em>Rolle’s theorem states that we have two roots</em> for \(F'(x)\). Again, use Rolle’s theorem to argue that \(F''(x)\) <em>has a root</em> \(\zeta\) <em>in</em> \([ x_{i}, x_{i+1} ]\). \(s(x)\) is a piecewise linear function, therefore <em>its second derivative is null</em>. We may state that</p>
+
+<p>\begin{equation}
+  \frac{d^{2}F}{dx^2}(\zeta)=\frac{d^{2}f}{dx^2}(\zeta) - 2q = 0
+\end{equation}</p>
+
+<p>which means that \(q=\frac{1}{2}f''(\zeta)\). Plug this in the definition of \(F(x)\) to state that</p>
+
+<p>\begin{equation}
+  f(x)-s(x) = \frac{1}{2} \frac{d^{2}f}{dx^2} (\zeta)(x-x_{i})(x-x_{i+1})
+\end{equation}</p>
+
+<p>and then assume the maximum over all possible values of \(x\) and all possible values of \(\zeta\) to obtain \(\|f(x)-s(x)\| \leq \frac{h^2}{8}M_{2}\), where \(M_{2} = \max _{[ x_{i}, x_{i+1} ]} \|f''(x)\|\). You may think that this means that we should choose a number of nodes which is as high as possible. While this may work in theory, in practice <em>there is a threshold where machine arithmetic errors take over</em> and deteriorate our results.</p>
+
+<h3 id="conclusions">Conclusions</h3>
+
+<p>This first article briefly covered many concepts in algebraic interpolation. This is the foundation to then move forward and understand what numerical intergration is about. As usual, I’d like give you a list of possible topics to read more, but keep in mind that the world of numerical interpolation is quite extensive. Furthermore, we grazed some topics from other fields of mathematics, such as <em>orthogonal polynomial with respect to a weight</em>. Some nice topics you may be interested in:</p>
+
+<ul>
+  <li><em>what if we change interpolating functions?</em> A possible choice is to use sines and cosines: as <em>algebraic interpolation is a natural consequence of the existence of the Taylor series</em> for a function, <em>armonic interpolation is a natural consequence of the existence of Fourier series</em>;</li>
+  <li>efficency is key when we want to implement our numerical methods, so much so that you need to rethink even the basics such as evaluating polynomials. Check how <em>Horner’s method</em> works and get yourself acquainted with big-O’s and other performance asymptotics;</li>
+  <li>weighted functional inner products are of fundamental importance in some fields of physics. Check how Laguerre polynomials <em>(orthogonal polynomials with respect to the exponential function)</em> are used in modelling <em>hydrogen-like atoms</em>.</li>
+</ul>
+
+<p>As always, feel free to reach out to me on <a href="https://linkedin.com/in/lbressan">Linkedin</a> or <a href="https://github.com/luca-bressan">GitHub</a> if you want to suggest improvements or if you want to just have a chat about this. I hope that you enjoyed!</p>
+
+<h3 id="bibliography-and-further-reading">Bibliography and further reading</h3>
+
+<ul>
+  <li><a href="https://github.com/luca-bressan/blog-resources/blob/6e92793226fdab88d5801db6d2eb079ad6d45d14/approssimazione_algebrica_tna2020.pdf">Approssimazione algebrica col metodo dei polinomi di Lagrange</a> (in Italian). This is some work I did as an undergrad which served as a foundation for this article. It contains a lot of practical examples and in-depth considerations about the stuff we talked about;</li>
+  <li>Rodriguez, Giuseppe, 2008. <em>“Algoritmi Numerici”</em> (in Italian);</li>
+  <li>Fermo, Luisa, 2018. <em>“Dispense per il corso di Teoria Numerica dell’ Approssimazione”</em> (in Italian);</li>
+  <li><a href="https://en.wikipedia.org/w/index.php?title=Laguerre_polynomials&amp;oldid=1127720816">Laguerre polynomials.</a></li>
+</ul>
+
+                </div>
+            </section>
+
+            <!-- Email subscribe form at the bottom of the page -->
+            
+
+            <footer class="post-full-footer">
+                <!-- Everything inside the #author tags pulls data from the author -->
+                <!-- #author-->
+                
+                    
+                
+                    
+                        <section class="author-card">
+                            
+                                <img class="author-profile-image" src="/assets/images/luca.jpg" alt="luca" />
+                            
+                            <section class="author-card-content">
+                                <h4 class="author-card-name"><a href="/author/luca">Luca Bressan</a></h4>
+                                
+                                    <p>Luca is the founder of this blog. Interested in finance, maths and cars.</p>
+                                
+                            </section>
+                        </section>
+                        <div class="post-full-footer-right">
+                            <a class="author-card-button" href="/author/luca">Read More</a>
+                        </div>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                <!-- /author  -->
+            </footer>
+
+            <!-- If you use Disqus comments, just uncomment this block.
+            The only thing you need to change is "test-apkdzgmqhj" - which
+            should be replaced with your own Disqus site-id. -->
+            
+
+        </article>
+
+    </div>
+</main>
+
+<!-- Links to Previous/Next posts -->
+<aside class="read-next outer">
+    <div class="inner">
+        <div class="read-next-feed">
+            
+                
+                
+                
+                
+            
+
+            <!-- If there's a next post, display it using the same markup included from - partials/post-card.hbs -->
+            
+
+            <!-- If there's a previous post, display it using the same markup included from - partials/post-card.hbs -->
+            
+                
+
+    <article class="post-card post-template">
+        
+            <a class="post-card-image-link" href="/about-barrier-options">
+                <div class="post-card-image" style="background-image: url(/assets/images/about-barrier-options/barrier.jpg)"></div>
+            </a>
+        
+        <div class="post-card-content">
+            <a class="post-card-content-link" href="/about-barrier-options">
+                <header class="post-card-header">
+                    
+                        
+                            
+                                <span class="post-card-tags">Derivatives</span>
+                            
+                        
+                    
+
+                    <h2 class="post-card-title">Some facts about barrier options</h2>
+                </header>
+                <section class="post-card-excerpt">
+                    
+                        <p>Cover photo by T L. Arguably, a dam is a down-and-out type of barrier, although not the kind we’re interested in. What you should know before reading this post Fundamentals of option pricing</p>
+                    
+                </section>
+            </a>
+            <footer class="post-card-meta">
+                
+                    
+                
+                    
+                        
+                        <img class="author-profile-image" src="/assets/images/luca.jpg" alt="Luca Bressan" />
+                        
+                        <span class="post-card-author">
+                            <a href="/author/luca/">Luca Bressan</a>
+                        </span>
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                    
+                
+                <span class="reading-time">
+                    
+                    
+                      17 min read
+                    
+                </span>
+            </footer>
+        </div>
+    </article>
+
+            
+
+        </div>
+    </div>
+</aside>
+
+<!-- Floating header which appears on-scroll, included from includes/floating-header.hbs -->
+<div class="floating-header">
+    <div class="floating-header-logo">
+        <a href="https://luca-bressan.github.io/">
+            
+                <img src="/assets/images/favicon.png" alt="Luca Bressan - finance & statistics icon" />
+            
+            <span>Luca Bressan - finance & statistics</span>
+        </a>
+    </div>
+    <span class="floating-header-divider">&mdash;</span>
+    <div class="floating-header-title">"He's giving away the numbers!": facts about numerical integration (Numerical interpolation, part 1)</div>
+    <div class="floating-header-share">
+        <div class="floating-header-share-label">Share this <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+    <path d="M7.5 15.5V4a1.5 1.5 0 1 1 3 0v4.5h2a1 1 0 0 1 1 1h2a1 1 0 0 1 1 1H18a1.5 1.5 0 0 1 1.5 1.5v3.099c0 .929-.13 1.854-.385 2.748L17.5 23.5h-9c-1.5-2-5.417-8.673-5.417-8.673a1.2 1.2 0 0 1 1.76-1.605L7.5 15.5zm6-6v2m-3-3.5v3.5m6-1v2"/>
+</svg>
+</div>
+        <a class="floating-header-share-tw" href="https://twitter.com/share?text=%22He%27s+giving+away+the+numbers%21%22%3A+facts+about+numerical+integration+%28Numerical+interpolation%2C+part+1%29&amp;url=https://luca-bressan.github.io/he-s-giving-the-numbers"
+            onclick="window.open(this.href, 'share-twitter', 'width=550,height=235');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M30.063 7.313c-.813 1.125-1.75 2.125-2.875 2.938v.75c0 1.563-.188 3.125-.688 4.625a15.088 15.088 0 0 1-2.063 4.438c-.875 1.438-2 2.688-3.25 3.813a15.015 15.015 0 0 1-4.625 2.563c-1.813.688-3.75 1-5.75 1-3.25 0-6.188-.875-8.875-2.625.438.063.875.125 1.375.125 2.688 0 5.063-.875 7.188-2.5-1.25 0-2.375-.375-3.375-1.125s-1.688-1.688-2.063-2.875c.438.063.813.125 1.125.125.5 0 1-.063 1.5-.25-1.313-.25-2.438-.938-3.313-1.938a5.673 5.673 0 0 1-1.313-3.688v-.063c.813.438 1.688.688 2.625.688a5.228 5.228 0 0 1-1.875-2c-.5-.875-.688-1.813-.688-2.75 0-1.063.25-2.063.75-2.938 1.438 1.75 3.188 3.188 5.25 4.25s4.313 1.688 6.688 1.813a5.579 5.579 0 0 1 1.5-5.438c1.125-1.125 2.5-1.688 4.125-1.688s3.063.625 4.188 1.813a11.48 11.48 0 0 0 3.688-1.375c-.438 1.375-1.313 2.438-2.563 3.188 1.125-.125 2.188-.438 3.313-.875z"/></svg>
+
+        </a>
+        <a class="floating-header-share-fb" href="https://www.facebook.com/sharer/sharer.php?u=https://luca-bressan.github.io/he-s-giving-the-numbers"
+            onclick="window.open(this.href, 'share-facebook','width=580,height=296');return false;">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32"><path d="M19 6h5V0h-5c-3.86 0-7 3.14-7 7v3H8v6h4v16h6V16h5l1-6h-6V7c0-.542.458-1 1-1z"/></svg>
+
+        </a>
+    </div>
+    <progress class="progress" value="0">
+        <div class="progress-container">
+            <span class="progress-bar"></span>
+        </div>
+    </progress>
+</div>
+
+
+<!-- /post -->
+
+<!-- The #contentFor helper here will send everything inside it up to the matching #block helper found in default.hbs -->
+
+
+        <!-- Previous/next page links - displayed on every page -->
+        
+
+        <!-- The footer at the very bottom of the screen -->
+        <footer class="site-footer outer">
+            <div class="site-footer-content inner">
+                <!--<section class="copyright"><a href="http://localhost:4000/">Luca Bressan - finance & statistics</a> &copy; 2022</section>-->
+                <section class="poweredby">Proudly published with <a href="https://jekyllrb.com/">Jekyll</a> &
+                    <a href="https://pages.github.com/" target="_blank" rel="noopener">GitHub Pages</a> using
+                    <a href="https://github.com/jekyllt/jasper2" target="_blank" rel="noopener">Jasper2. </a>
+                    Photos courtesy of <a href="https://unsplash.com/" target="_blank" rel="noopener">Unsplash</a>.
+                </section>
+                <nav class="site-footer-nav">
+                    <a href="/">Latest Posts</a>
+                    <a href="https://linkedin.com/in/lbressan" target="_blank" rel="noopener">Linkedin</a>
+                    <a href="https://github.com/luca-bressan" target="_blank" rel="noopener">GitHub</a>
+                    <!--<a href="https://ghost.org" target="_blank" rel="noopener">Ghost</a>-->
+                </nav>
+            </div>
+        </footer>
+
+    </div>
+
+    <!-- The big email subscribe modal content -->
+    
+
+
+    <!-- jQuery + Fitvids, which makes all video embeds responsive -->
+    <script
+        src="https://code.jquery.com/jquery-3.2.1.min.js"
+        integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+        crossorigin="anonymous">
+    </script>
+    <script type="text/javascript" src="/assets/js/jquery.fitvids.js"></script>
+
+
+
+    <!-- Paginator increased to "infinit" in _config.yml -->
+    <!-- if paginator.posts  -->
+    <!-- <script>
+        var maxPages = parseInt('');
+    </script>
+    <script src="/assets/js/infinitescroll.js"></script> -->
+    <!-- /endif -->
+
+    
+
+
+    <!-- Add Google Analytics  -->
+    <!--
+-->
+
+    <!-- The #block helper will pull in data from the #contentFor other template files. In this case, there's some JavaScript which we only want to use in post.hbs, but it needs to be included down here, after jQuery has already loaded. -->
+    
+        <script>
+
+// NOTE: Scroll performance is poor in Safari
+// - this appears to be due to the events firing much more slowly in Safari.
+//   Dropping the scroll event and using only a raf loop results in smoother
+//   scrolling but continuous processing even when not scrolling
+$(document).ready(function () {
+    // Start fitVids
+    var $postContent = $(".post-full-content");
+    $postContent.fitVids();
+    // End fitVids
+
+    var progressBar = document.querySelector('progress');
+    var header = document.querySelector('.floating-header');
+    var title = document.querySelector('.post-full-title');
+
+    var lastScrollY = window.scrollY;
+    var lastWindowHeight = window.innerHeight;
+    var lastDocumentHeight = $(document).height();
+    var ticking = false;
+
+    function onScroll() {
+        lastScrollY = window.scrollY;
+        requestTick();
+    }
+
+    function onResize() {
+        lastWindowHeight = window.innerHeight;
+        lastDocumentHeight = $(document).height();
+        requestTick();
+    }
+
+    function requestTick() {
+        if (!ticking) {
+            requestAnimationFrame(update);
+        }
+        ticking = true;
+    }
+
+    function update() {
+        var trigger = title.getBoundingClientRect().top + window.scrollY;
+        var triggerOffset = title.offsetHeight + 35;
+        var progressMax = lastDocumentHeight - lastWindowHeight;
+
+        // show/hide floating header
+        if (lastScrollY >= trigger + triggerOffset) {
+            header.classList.add('floating-active');
+        } else {
+            header.classList.remove('floating-active');
+        }
+
+        progressBar.setAttribute('max', progressMax);
+        progressBar.setAttribute('value', lastScrollY);
+
+        ticking = false;
+    }
+
+    window.addEventListener('scroll', onScroll, {passive: true});
+    window.addEventListener('resize', onResize, false);
+
+    update();
+});
+</script>
+
+    
+
+    <!-- Ghost outputs important scripts and data with this tag - it should always be the very last thing before the closing body tag -->
+    <!-- ghost_foot -->
+
+</body>
+</html>
